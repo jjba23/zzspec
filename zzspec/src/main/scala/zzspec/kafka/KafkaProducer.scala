@@ -20,7 +20,6 @@ object KafkaProducer {
     RecordMetadata,
   ] = {
     for {
-
       recordMetadata <- Producer.produce[Any, String, Array[Byte]](
         topic = topicName,
         key = key,
@@ -28,7 +27,7 @@ object KafkaProducer {
         keySerializer = Serde.string,
         valueSerializer = Serde.byteArray,
       )
-      _ <- ZIO.logInfo(s"[ZZSpec] Published record with key: $key to Kafka")
+      _ <- ZIO.logInfo(s"[ZZSpec] Published record with key: $key to Kafka, $recordMetadata")
 
     } yield recordMetadata
   }
@@ -37,7 +36,7 @@ object KafkaProducer {
     ZLayer {
       for {
         kafkaContainer <- ZIO.service[KafkaContainer]
-        kafkaServer = s"${kafkaContainer.getHost}:${kafkaContainer.getMappedPort(9093)}"
+        kafkaServer = s"${kafkaContainer.getHost}:${kafkaContainer.getMappedPort(9092)}"
         producer <- Producer.make(
           settings = ProducerSettings(List(kafkaServer)),
         )

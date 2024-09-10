@@ -4,9 +4,10 @@ import org.apache.kafka.clients
 import org.apache.kafka.clients.admin.{Admin => AdminClient, AdminClientConfig}
 import org.testcontainers.kafka.KafkaContainer
 import zio._
-
+import zio.kafka.consumer._
 import java.util.Properties
 import scala.jdk.CollectionConverters._
+import zio.kafka.serde.Serde
 
 case class NewTopic(name: String, partitions: Int, replicationFactor: Short, configs: Map[String, String])
 
@@ -37,4 +38,14 @@ object Kafka {
     props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers)
     AdminClient.create(props)
   }
+
+  def consumeAndDoWithEvents(groupId: String, bootstrapServers: Seq[String], topic: String)(
+    f: clients.consumer.ConsumerRecord[Long, Array[Byte]] => URIO[Any, Unit]
+  ): RIO[Any, Unit] =
+    Consumer.consumeWith(
+      settings = ConsumerSettings(bootstrapServers.toList).withGroupId(groupId),
+      subscription = Subscription.topics(topic),
+      keyDeserializer = Serde.long,
+      valueDeserializer = Serde.byteArray,
+    )(f)
 }
