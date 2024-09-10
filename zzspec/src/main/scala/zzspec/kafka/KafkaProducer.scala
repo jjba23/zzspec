@@ -10,22 +10,22 @@ import scala.jdk.CollectionConverters._
 
 object KafkaProducer {
 
-  def runProducer(
+  def runProducer[T](
     topicName: String,
     key: String,
-    value: Array[Byte],
+    value: String
   ): ZIO[
     Producer with KafkaContainer,
     Throwable,
     RecordMetadata,
   ] = {
     for {
-      recordMetadata <- Producer.produce[Any, String, Array[Byte]](
+      recordMetadata <- Producer.produce[Any, String, String](
         topic = topicName,
         key = key,
         value = value,
         keySerializer = Serde.string,
-        valueSerializer = Serde.byteArray,
+        valueSerializer = Serde.string,
       )
       _ <- ZIO.logInfo(s"[ZZSpec] Published record with key: $key to Kafka, $recordMetadata")
 

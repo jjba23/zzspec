@@ -29,7 +29,7 @@ object Dependencies extends AutoPlugin {
     val ZioPrelude            = "dev.zio" %% "zio-prelude"               % "1.0.0-RC30"
     val ZioProcess            = "dev.zio" %% "zio-process"               % "0.7.2"
     val ZioKafka              = "dev.zio" %% "zio-kafka"                 % "2.8.2"
-    val ZioKafkaTest          = "dev.zio" %% "zio-kafka-testkit"         % ZioKafka.revision % Test
+    val ZioKafkaTest          = "dev.zio" %% "zio-kafka-testkit"         % ZioKafka.revision
     val ZioHttp               = "dev.zio" %% "zio-http"                  % "3.0.0-RC10"
     val ZioLogging            = "dev.zio" %% "zio-logging"               % "2.3.1"
     val ZioLoggingSlf4jBridge = "dev.zio" %% "zio-logging-slf4j2-bridge" % ZioLogging.revision

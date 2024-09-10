@@ -1,6 +1,6 @@
 package kafkatest
 
-import zzspec.kafka.{Kafka, KafkaContainer, NewTopic}
+import zzspec.kafka._
 import org.apache.kafka.common.config.TopicConfig
 import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.kafka.{KafkaContainer => KafkaTestContainer}
@@ -13,6 +13,12 @@ import zzspec.kafka.KafkaProducer
 import io.circe.generic.auto._, io.circe.syntax._
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import scala.collection.mutable.Buffer
+import zio.kafka.consumer.Consumer
+import zio.kafka.consumer.Subscription
+import zio.kafka.serde.Serde
+import zio.kafka.testkit
+import zio.kafka.consumer.ConsumerSettings
+import com.fasterxml.jackson.databind.ObjectMapper
 
 object KafkaSpec extends ZIOSpecDefault {
 
@@ -24,15 +30,17 @@ object KafkaSpec extends ZIOSpecDefault {
     LogFilter.LogLevelByNameConfig.default
   )
   private val logs = Runtime.removeDefaultLoggers >>> consoleLogger(logConfig) >+> Slf4jBridge.initialize
+  private val mapper = new ObjectMapper()
 
   def spec: Spec[Environment with TestEnvironment with Scope, Any] =
-    suite("Kafka tests")(basicKafkaTopicOperations, publishingToKafkaTopicWorks).provideShared(
+    suite("Kafka tests")(basicKafkaTopicOperations, publishingAndConsumingKafkaTopicWorks).provideShared(
       ZLayer.succeed(Network.SHARED),
       logs,
       ZLayer.succeed(new Slf4jLogConsumer(slf4jLogger)),
       Scope.default,
       KafkaContainer.layer,
-      KafkaProducer.producerLayer
+      KafkaProducer.producerLayer,
+      Kafka.consumerLayer
     )
 
   def basicKafkaTopicOperations =
@@ -51,9 +59,9 @@ object KafkaSpec extends ZIOSpecDefault {
         _ <- Kafka.createTopic(topic).orDie
         _ <- Kafka.deleteTopic(topic.name).orDie
       } yield assertTrue(1 == 1)
-    } @@ TestAspect.timeout(30.seconds)
+    } @@ TestAspect.timeout(10.seconds)
 
-  def publishingToKafkaTopicWorks = test("""
+  def publishingAndConsumingKafkaTopicWorks = test("""
     Publishing and consuming simple messages to a Kafka topic works as expected
   """) {
     val topic = NewTopic(
@@ -69,32 +77,31 @@ object KafkaSpec extends ZIOSpecDefault {
       stringValue = "stringValue",
       intValue = 999,
       stringListValue = Seq("a", "b", "c")
-    ).asJson.toString.getBytes
-
-    val consumedMessages: Buffer[String] = Buffer.empty
+    ).asJson.toString
 
     for {
       kafkaContainer <- ZIO.service[KafkaTestContainer]
+
       _ <- Kafka.createTopic(topic).orDie
-
-      consumerFib <- Kafka
-        .consumeAndDoWithEvents(
-          groupId = "zzspec",
-          bootstrapServers = Seq(kafkaContainer.getBootstrapServers()),
-          topic = "test-topic2"
-        )((r: ConsumerRecord[Long, Array[Byte]]) =>
-          ZIO.succeed(consumedMessages += r.key.toString) *>
-            Console
-              .printLine(s"key: ${r.key}, value: ${r.value.toString}, consumerRecord: $r")
-              .orDie
-        )
-        .fork
-
-      _ <- ZIO.sleep(5.seconds)
 
       _ <- KafkaProducer
         .runProducer(topic.name, "1", payload)
         .orDie
-    } yield assertTrue(consumedMessages.length == 1)
-  } @@ TestAspect.withLiveClock @@ TestAspect.timeout(30.seconds)
+      _ <- ZIO.logInfo(s"!!! Produced message: $payload")
+      consumer <- ZIO.service[Consumer]
+      records <- consumer
+        .plainStream(Subscription.Topics(Set(topic.name)), Serde.string, Serde.string)
+        .take(1)
+        .runCollect
+
+      consumedMessages = records.map(r => (r.record.key, r.record.value))
+
+      expectedFirstMessage =
+        """ { "stringValue": "stringValue", "intValue": 999, "stringListValue": ["a", "b", "c"]}  """
+    } yield assertTrue(
+      consumedMessages.length == 1 && consumedMessages.headOption.map(m => mapper.readTree(m._2)) == Some(
+        mapper.readTree(expectedFirstMessage)
+      )
+    )
+  } @@ TestAspect.withLiveClock @@ TestAspect.timeout(10.seconds)
 }

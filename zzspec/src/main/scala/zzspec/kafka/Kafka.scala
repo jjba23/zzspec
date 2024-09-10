@@ -8,6 +8,10 @@ import zio.kafka.consumer._
 import java.util.Properties
 import scala.jdk.CollectionConverters._
 import zio.kafka.serde.Serde
+import org.testcontainers.kafka.{KafkaContainer => KafkaTestContainer}
+import zio.kafka.testkit
+import zio.kafka.consumer.Consumer.OffsetRetrieval
+import zio.kafka.consumer.Consumer.AutoOffsetStrategy
 
 case class NewTopic(name: String, partitions: Int, replicationFactor: Short, configs: Map[String, String])
 
@@ -39,13 +43,4 @@ object Kafka {
     AdminClient.create(props)
   }
 
-  def consumeAndDoWithEvents(groupId: String, bootstrapServers: Seq[String], topic: String)(
-    f: clients.consumer.ConsumerRecord[Long, Array[Byte]] => URIO[Any, Unit]
-  ): RIO[Any, Unit] =
-    Consumer.consumeWith(
-      settings = ConsumerSettings(bootstrapServers.toList).withGroupId(groupId),
-      subscription = Subscription.topics(topic),
-      keyDeserializer = Serde.long,
-      valueDeserializer = Serde.byteArray,
-    )(f)
 }
