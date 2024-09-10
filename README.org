@@ -1,24 +1,24 @@
-* ZioZen
+* ZZSpec
 
 A Scala library with great ZIO integration to help you easily write high-level integration/black box tests.
 
 * Why ?
-Read more about the ideas and motivation behind ZioZen [[./docs/Motivation.md][here]].
+Read more about the ideas and motivation behind ZZSpec [[./docs/Motivation.md][here]].
 
 * Status of the library
 
-Read more about the current status and future ideas for ZioZen [[./docs/Status.md][here]].
+Read more about the current status and future ideas for ZZSpec [[./docs/Status.md][here]].
 
 #+caption: img
 [[https://www.testbirds.com/wp-content/uploads/Black-Box-Testing-Cropped.jpg]]
 
 * Usage
-For more information about how to get started using ZioZen, a good place to look is the integration tests of ZioZen itself.
+For more information about how to get started using ZZSpec, a good place to look is the integration tests of ZZSpec itself.
 
-See the PostgreSQL spec [[./ziozen/src/test/scala/postgresqltest/PostgreSQLSpec.scala][here]].
+See the PostgreSQL spec [[./zzspec/src/test/scala/postgresqltest/PostgreSQLSpec.scala][here]].
 
-See the OpenSearch spec [[./ziozen/src/test/scala/opensearchtest/OpensearchSpec.scala][here]].
+See the OpenSearch spec [[./zzspec/src/test/scala/opensearchtest/OpensearchSpec.scala][here]].
 
-See the Kafka spec [[./ziozen/src/test/scala/kafkatest/KafkaSpec.scala][here]].
+See the Kafka spec [[./zzspec/src/test/scala/kafkatest/KafkaSpec.scala][here]].
 
-See the MockServer spec [[./ziozen/src/test/scala/mockservertest/MockServerSpec.scala][here]].
+See the MockServer spec [[./zzspec/src/test/scala/mockservertest/MockServerSpec.scala][here]].
