@@ -10,7 +10,7 @@ import scala.jdk.CollectionConverters._
 
 object KafkaProducer {
 
-  def runProducer[T](
+  def produce[T](
     topicName: String,
     key: String,
     value: String

@@ -17,6 +17,8 @@ import zio.test._
 
 import java.util.UUID
 import scala.util.Try
+import zzspec.ZZSpec.networkLayer
+import zzspec.ZZSpec.containerLogger
 
 case class DummyData(someString: String)
 
@@ -26,12 +28,6 @@ object DummyData {
 
 object OpensearchSpec extends ZIOSpecDefault {
 
-  private val slf4jLogger = org.slf4j.LoggerFactory.getLogger("")
-  private val logConfig = ConsoleLoggerConfig(
-    LogFormat.colored,
-    LogFilter.LogLevelByNameConfig.default
-  )
-  private val logs = Runtime.removeDefaultLoggers >>> consoleLogger(logConfig) >+> Slf4jBridge.initialize
   private implicit object IndexableDummyData extends Indexable[DummyData] {
     def json(t: DummyData): String = t.asJson.toString()
   }
@@ -42,9 +38,8 @@ object OpensearchSpec extends ZIOSpecDefault {
   def spec: Spec[Environment with TestEnvironment with Scope, Any] =
     suite("Opensearch query tests")(basicOpensearchOperations).provideShared(
       Scope.default,
-      ZLayer.succeed(Network.SHARED),
-      logs,
-      ZLayer.succeed(new Slf4jLogConsumer(slf4jLogger)),
+      networkLayer,
+      containerLogger,
       OpensearchContainer.layer,
       OpensearchContainer.Settings.default,
       Opensearch.layer,

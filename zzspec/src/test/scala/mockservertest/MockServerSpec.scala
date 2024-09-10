@@ -10,22 +10,16 @@ import zio.http._
 import zio.logging._
 import zio.logging.slf4j.bridge.Slf4jBridge
 import zio.test._
+import zzspec.ZZSpec.networkLayer
+import zzspec.ZZSpec.containerLogger
 
 object MockServerSpec extends ZIOSpecDefault {
-
-  private val slf4jLogger = org.slf4j.LoggerFactory.getLogger("")
-  private val logConfig = ConsoleLoggerConfig(
-    LogFormat.colored,
-    LogFilter.LogLevelByNameConfig.default
-  )
-  private val logs = Runtime.removeDefaultLoggers >>> consoleLogger(logConfig) >+> Slf4jBridge.initialize
 
   def spec: Spec[Environment with TestEnvironment with Scope, Any] =
     suite("MockServer tests")(basicMockServerOperations).provideShared(
       Scope.default,
-      ZLayer.succeed(Network.SHARED),
-      logs,
-      ZLayer.succeed(new Slf4jLogConsumer(slf4jLogger)),
+      networkLayer,
+      containerLogger,
       MockServerContainer.layer,
       MockServer.layer,
       Client.default,

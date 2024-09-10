@@ -12,6 +12,8 @@ import zio.logging.slf4j.bridge.Slf4jBridge
 import zio.test._
 
 import java.util.UUID
+import zzspec.ZZSpec.networkLayer
+import zzspec.ZZSpec.containerLogger
 
 object PostgreSQLSpec extends ZIOSpecDefault {
 
@@ -23,19 +25,11 @@ object PostgreSQLSpec extends ZIOSpecDefault {
       DDLColumn(name = "some_bool", dataType = "BOOLEAN NOT NULL"),
     ),
   )
-  private val slf4jLogger = org.slf4j.LoggerFactory.getLogger("")
-  private val logConfig = ConsoleLoggerConfig(
-    LogFormat.colored,
-    LogFilter.LogLevelByNameConfig.default
-  )
-  private val logs = Runtime.removeDefaultLoggers >>> consoleLogger(logConfig) >+> Slf4jBridge.initialize
-
   def spec: Spec[Environment with TestEnvironment with Scope, Any] =
     suite("PostgreSQL query tests")(basicPostgreSQLOperationsTest).provideShared(
       Scope.default,
-      ZLayer.succeed(Network.SHARED),
-      logs,
-      ZLayer.succeed(new Slf4jLogConsumer(slf4jLogger)),
+      networkLayer,
+      containerLogger,
       PostgreSQLContainer.Settings.default,
       PostgreSQLContainer.layer,
       PostgreSQLPool.layer,

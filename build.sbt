@@ -8,11 +8,6 @@ ThisBuild / testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
 
 Global / concurrentRestrictions += Tags.limit(Tags.Test, 1)
 
-addCommandAlias(
-  "validate",
-  ";compile;Test/compile;scalafmtSbt;scalafmtAll;scalafixAll"
-)
-
 val zzspec = project
   .settings(
     libraryDependencies ++= zzspecDependencies,
