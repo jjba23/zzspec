@@ -51,6 +51,7 @@ object KafkaSpec extends ZIOSpecDefault {
       // given
       kafkaContainer <- ZIO.service[KafkaTestContainer]
       _ <- Kafka.createTopic(topic).orDie
+
       // given - messages
       _ <- KafkaProducer
         .runProducer(
@@ -63,7 +64,8 @@ object KafkaSpec extends ZIOSpecDefault {
           ).asJson.toString
         )
         .orDie
-      // then
+
+      // when
       consumer <- ZIO.service[Consumer]
       records <- consumer
         .plainStream(Subscription.Topics(Set(topic.name)), Serde.string, Serde.string)
@@ -71,19 +73,24 @@ object KafkaSpec extends ZIOSpecDefault {
         .runCollect
 
       consumedMessages = records.map(r => (r.record.key, r.record.value))
+      firstMessage <- parseJson(consumedMessages.head._2).orDie
+
+      // then
+      expectedFirstMessage <- ZZContract
+        .fromTestName(
+          name = testCaseName,
+          className = this.getClass().toString(),
+          extension = ".json",
+          orElse = Some(firstMessage.toPrettyString())
+        )
+        .flatMap(parseJson)
+        .orDie
+
+      _ <- ZIO.logInfo(s"expectedFirstMessage: $expectedFirstMessage")
       _ <- ZIO.logInfo(s"consumedMessages: $consumedMessages")
 
-      expectedFirstMessage <- ZZContract.fromTestName(name = testCaseName, className = this.getClass().toString()).orDie
     } yield assertTrue(
-      consumedMessages.length == 1 &&
-        consumedMessages.headOption.map(m => parseJson(m._2)) == Some(
-          parseJson(expectedFirstMessage)
-        )
+      consumedMessages.length == 1 && firstMessage == expectedFirstMessage
     )
   } @@ TestAspect.withLiveClock @@ TestAspect.timeout(8.seconds)
 }
-
-// { "stringValue": "stringValue",
-//               "intValue": 999,
-//               "stringListValue": ["a", "b", "c"]
-//            }

@@ -13,6 +13,7 @@ import zzspec.kafka.NewTopic
 import java.nio.file.{Files, Paths}
 import zio.test._
 import java.nio.file.Path
+import java.io.FileWriter
 
 case class SbtTestCase(
   sbtTask: String,
@@ -53,7 +54,7 @@ object ZZSpec {
 
   val mapper = new ObjectMapper()
   def parseJson(x: String) =
-    ZIO.attempt(mapper.readTree(x)).mapError(e => s"$e; stacktrace: ${e.getStackTrace()}").either
+    ZIO.attempt(mapper.readTree(x))
 
   def newTopic(name: String): NewTopic = NewTopic(
     name = name,
@@ -75,26 +76,37 @@ object ZZContract {
   def fromTestName(
     name: String,
     className: String = this.getClass().toString(),
-    extension: String = ".json"
-  ): ZIO[Any, Throwable, String] = {
+    extension: String = ".json",
+    orElse: Option[String] = None
+  ) = {
     val newName = cleanName(name)
     val newClassName = cleanName(className)
-    readTestFileOrCreate(s"$newName-$newClassName${extension}")
+    readTestFileOrCreate(s"$newName-$newClassName${extension}", orElse)
   }
 
-  def readTestFileOrCreate(fileName: String): ZIO[Any, Throwable, String] = {
+  def writeToFile(fileName: String, content: String) = {
+    for {
+      w <- ZIO.acquireRelease(ZIO.attempt(new FileWriter(fileName)))(w => ZIO.attempt(w.close()).orDie)
+      _ <- ZIO.attempt(w.write(content))
+    } yield ()
+  }
+
+  def readTestFileOrCreate(fileName: String, orElse: Option[String]) = {
     val filePath = Paths.get("zzspec", "src", "main", "resources", "contracts", fileName)
 
     for {
       fileExists <- ZIO.attempt(Files.exists(filePath)).orElseSucceed(false)
       contents <-
         if (fileExists) {
-          ZIO.attempt(Files.readAllBytes(filePath)).map(_.toString)
+          ZIO.attempt(Files.readString(filePath))
         } else {
-          ZIO
-            .attempt(Files.createFile(filePath))
-            .flatMap(_ => ZIO.attempt(Files.readAllBytes(filePath)).map(_.toString))
+          ZIO.attempt(Files.createFile(filePath)) *> (if (orElse.isDefined) {
+                                                        writeToFile(filePath.toString(), orElse.get)
+                                                      } else { ZIO.unit }) *> ZIO
+            .attempt(Files.readString(filePath))
+
         }
+
     } yield contents
   }
 }
