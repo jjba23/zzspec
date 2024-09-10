@@ -1,0 +1,45 @@
+# Ignore all dotfiles...
+# except for .gitignore
+!.gitignore
+.DS_Store
+.idea/
+.bintray/
+*.iml
+target
+.docker-sync
+
+# Ignore Play! working directory #
+eclipse
+log
+logs
+*.log
+precompiled
+project/project
+project/target
+target
+tmp
+test-result
+server.pid
+*.eml
+dist
+out
+my-assets
+*.stackdump
+
+# Ignore local application.conf changes
+/conf/application.local-*.conf
+/conf/generated.keystore
+
+# Non-default (copied from zd-insurer)
+telepresence-zd-matcher
+metals.sbt
+helm/**/charts/*.tgz
+.vscode
+.bsp
+.run/
+Main.run.xml
+.metals
+.bloop
+
+.terraform/
+*.tfstate
