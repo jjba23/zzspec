@@ -5,7 +5,9 @@ A Scala library with great ZIO integration to help you easily write high-level i
 * Why ?
 Testing at a high level  means freedom of implementation and refactoring. This is something all engineers love 💘. Read more this page further to understand why this library was created.
 
+#+begin_html
 <img width="300" height="300" src="./resources/zzspec-ai.webp"/>
+#+end_html
 
 * Usage
 
