@@ -12,6 +12,7 @@ import java.io.File
 import zzspec.kafka.NewTopic
 import java.nio.file.{Files, Paths}
 import zio.test._
+import java.nio.file.Path
 
 case class SbtTestCase(
   sbtTask: String,
@@ -51,7 +52,8 @@ object ZZSpec {
     )
 
   val mapper = new ObjectMapper()
-  def parseJson(x: String) = mapper.readTree(x)
+  def parseJson(x: String) =
+    ZIO.attempt(mapper.readTree(x)).mapError(e => s"$e; stacktrace: ${e.getStackTrace()}").either
 
   def newTopic(name: String): NewTopic = NewTopic(
     name = name,
@@ -67,19 +69,21 @@ object ZZSpec {
 
 object ZZContract {
 
+  def cleanName = (x: String) =>
+    x.strip.toLowerCase().replaceAll("\\s", "-").replaceAll("[^A-Za-z0-9\\-]", "-").replaceAll("-{2,}", "-")
+
   def fromTestName(
     name: String,
     className: String = this.getClass().toString(),
     extension: String = ".json"
   ): ZIO[Any, Throwable, String] = {
-    def cleanName = (x: String) => x.toLowerCase().replaceAll("\\s", "").replaceAll("[^A-Za-z0-9\\-]", "")
     val newName = cleanName(name)
     val newClassName = cleanName(className)
-    readTestFileOrCreate(s"$newClassName-${newName}${extension}")
+    readTestFileOrCreate(s"$newName-$newClassName${extension}")
   }
 
   def readTestFileOrCreate(fileName: String): ZIO[Any, Throwable, String] = {
-    val filePath = Paths.get("src", "main", "resources", "contracts", fileName)
+    val filePath = Paths.get("zzspec", "src", "main", "resources", "contracts", fileName)
 
     for {
       fileExists <- ZIO.attempt(Files.exists(filePath)).orElseSucceed(false)
