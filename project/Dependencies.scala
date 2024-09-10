@@ -40,16 +40,12 @@ object Dependencies extends AutoPlugin {
     val TestcontainersPostgresql = "org.testcontainers" % "postgresql"                % "1.20.1"
     val TestContainersMockServer = "org.testcontainers" % "mockserver"                % "1.20.1"
 
-    val Scalikejdbc = "org.scalikejdbc" %% "scalikejdbc" % "3.5.0"
-    val ScalikejdbcStreams =
-      "org.scalikejdbc" %% "scalikejdbc-streams" % Scalikejdbc.revision
-    val PostgresqlDriver = "org.postgresql" % "postgresql" % "42.7.3"
-
-    val KindProjector = "org.typelevel" % "kind-projector" % "0.13.2"
+    val Scalikejdbc      = "org.scalikejdbc" %% "scalikejdbc" % "4.3.1"
+    val PostgresqlDriver = "org.postgresql"   % "postgresql"  % "42.7.4"
 
     val MockServerClient = "org.mock-server" % "mockserver-client-java" % "5.15.0"
 
-    val JacksonCore        = "com.fasterxml.jackson.core"    % "jackson-core"         % "2.10.0"
+    val JacksonCore        = "com.fasterxml.jackson.core"    % "jackson-core"         % "2.17.2"
     val JacksonDatabind    = "com.fasterxml.jackson.core"    % "jackson-databind"     % JacksonCore.revision
     val JacksonModuleScala = "com.fasterxml.jackson.module" %% "jackson-module-scala" % JacksonCore.revision
 
@@ -75,7 +71,6 @@ object Dependencies extends AutoPlugin {
       TestcontainersKafka,
       TestContainersMockServer,
       Scalikejdbc,
-      ScalikejdbcStreams,
       PostgresqlDriver,
       Elastic4sCore,
       Elastic4sHttp,

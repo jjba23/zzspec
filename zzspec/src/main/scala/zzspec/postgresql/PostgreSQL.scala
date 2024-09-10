@@ -13,13 +13,13 @@ object PostgreSQL {
 
   def updateRaw(sql: String): DBEff[Int] = ZIO.attemptBlocking {
     DB.localTx { implicit session =>
-      SQL(sql).update().apply()
+      SQL(sql).update()
     }
   }
 
   def executeRaw(sql: String): DBEff[Boolean] = ZIO.attemptBlocking {
     DB.autoCommit { implicit session =>
-      SQL(sql).execute().apply()
+      SQL(sql).execute()
     }
   }
 
@@ -35,7 +35,6 @@ object PostgreSQL {
       SQL(stmt)
         .map(_.long("bb_count"))
         .single()
-        .apply()
     }
 
     count.fold(0.toLong)(identity)
@@ -86,7 +85,6 @@ object PostgreSQL {
           Map.from(parsedColumns)
         }
         .single()
-        .apply()
     }
     row
   }

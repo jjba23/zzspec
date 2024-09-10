@@ -12,5 +12,4 @@ val zzspec = project
   .settings(
     libraryDependencies ++= zzspecDependencies,
     dependencyOverrides ++= zzspecDependencyOverrides,
-    addCompilerPlugin(KindProjector cross CrossVersion.full)
   )
