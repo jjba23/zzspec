@@ -15,7 +15,7 @@ object KafkaProducer {
     key: String,
     value: Array[Byte],
   ): ZIO[
-    Producer & KafkaContainer,
+    Producer with KafkaContainer,
     Throwable,
     RecordMetadata,
   ] = {
@@ -33,7 +33,7 @@ object KafkaProducer {
     } yield recordMetadata
   }
 
-  def producerLayer: ZLayer[KafkaContainer & Scope, Throwable, Producer] =
+  def producerLayer: ZLayer[KafkaContainer with Scope, Throwable, Producer] =
     ZLayer {
       for {
         kafkaContainer <- ZIO.service[KafkaContainer]

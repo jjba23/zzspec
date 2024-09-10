@@ -20,7 +20,7 @@ object MockServerSpec extends ZIOSpecDefault {
   )
   private val logs = Runtime.removeDefaultLoggers >>> consoleLogger(logConfig) >+> Slf4jBridge.initialize
 
-  def spec: Spec[Environment & TestEnvironment & Scope, Any] =
+  def spec: Spec[Environment with TestEnvironment with Scope, Any] =
     suite("MockServer tests")(basicMockServerOperations).provideShared(
       Scope.default,
       ZLayer.succeed(Network.SHARED),
@@ -29,10 +29,10 @@ object MockServerSpec extends ZIOSpecDefault {
       MockServerContainer.layer,
       MockServer.layer,
       Client.default,
-    )
+    ) @@ TestAspect.withLiveClock
 
   def basicMockServerOperations
-    : Spec[Scope & MockServer.Client & MockServerContainer.Container & Client & Scope, Throwable] =
+    : Spec[Scope with MockServer.Client with MockServerContainer.Container with Client with Scope, Throwable] =
     test("""
       Doing an HTTP request to the mock server returns the expected result.
     """) {

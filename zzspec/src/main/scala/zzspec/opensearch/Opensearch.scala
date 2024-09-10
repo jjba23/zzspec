@@ -11,7 +11,7 @@ object Opensearch {
 
   import ZIOTaskImplicits._
 
-  private type SearchEff[T] = ZIO[Scope & Client, Throwable, T]
+  private type SearchEff[T] = ZIO[Scope with Client, Throwable, T]
   val layer: ZLayer[Container, Throwable, Client] =
     ZLayer {
       for {

@@ -13,7 +13,7 @@ object PostgreSQLContainer {
     databaseName = "matcher-indexer",
   )
   val layer: ZLayer[
-    Settings & Network & Slf4jLogConsumer,
+    Settings with Network with Slf4jLogConsumer,
     Throwable,
     Container,
   ] = ZLayer.scoped {
@@ -38,7 +38,7 @@ object PostgreSQLContainer {
     settings: Settings,
     logConsumer: Slf4jLogConsumer,
     network: Network,
-  ): URIO[Any & Scope, PostgreSQLTestContainer[?]] =
+  ): URIO[Any with Scope, PostgreSQLTestContainer[?]] =
     ZIO.acquireRelease(
       ZIO
         .attempt(new PostgreSQLTestContainer(image))

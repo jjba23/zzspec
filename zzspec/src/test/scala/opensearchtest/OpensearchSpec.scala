@@ -39,7 +39,7 @@ object OpensearchSpec extends ZIOSpecDefault {
     def read(hit: Hit): Try[DummyData] = decode[DummyData](hit.sourceAsString).toTry
   }
 
-  def spec: Spec[Environment & TestEnvironment & Scope, Any] =
+  def spec: Spec[Environment with TestEnvironment with Scope, Any] =
     suite("Opensearch query tests")(basicOpensearchOperations).provideShared(
       Scope.default,
       ZLayer.succeed(Network.SHARED),
@@ -50,7 +50,8 @@ object OpensearchSpec extends ZIOSpecDefault {
       Opensearch.layer,
     )
 
-  def basicOpensearchOperations: Spec[Scope & Opensearch.Client & OpensearchContainer.Container & Scope, Throwable] =
+  def basicOpensearchOperations
+    : Spec[Scope with Opensearch.Client with OpensearchContainer.Container with Scope, Throwable] =
     test("""
     Delete an index.
     Create an index.

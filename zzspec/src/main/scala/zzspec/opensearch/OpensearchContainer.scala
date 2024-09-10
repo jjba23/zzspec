@@ -10,7 +10,7 @@ import scala.jdk.CollectionConverters._
 
 object OpensearchContainer {
 
-  val layer: ZLayer[Settings & Network & Slf4jLogConsumer, Throwable, Container] = ZLayer.scoped {
+  val layer: ZLayer[Settings with Network with Slf4jLogConsumer, Throwable, Container] = ZLayer.scoped {
     for {
       network <- ZIO.service[Network]
       logConsumer <- ZIO.service[Slf4jLogConsumer]
@@ -26,7 +26,7 @@ object OpensearchContainer {
   private def scopedTestContainer(
     logConsumer: Slf4jLogConsumer,
     network: Network,
-  ): URIO[Any & Scope, OpensearchTestContainer[?]] = {
+  ): URIO[Any with Scope, OpensearchTestContainer[?]] = {
     def prepContainer(container: OpensearchTestContainer[?]) =
       ZIO.attempt {
         container.withEnv(

@@ -7,7 +7,7 @@ case class PostgreSQLPool()
 
 object PostgreSQLPool {
   def layer: ZLayer[
-    Scope & PostgreSQLContainer.Container,
+    Scope with PostgreSQLContainer.Container,
     Throwable,
     PostgreSQLPool,
   ] =

@@ -9,7 +9,7 @@ import java.util.Date
 
 object PostgreSQL {
 
-  private type DBEff[T] = ZIO[PostgreSQLPool & Scope, Throwable, T]
+  private type DBEff[T] = ZIO[PostgreSQLPool with Scope, Throwable, T]
 
   def updateRaw(sql: String): DBEff[Int] = ZIO.attemptBlocking {
     DB.localTx { implicit session =>

@@ -4,11 +4,12 @@ import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.containers.{MockServerContainer => MockServerTestContainer, Network}
 import org.testcontainers.utility.DockerImageName
 import zio._
+import org.testcontainers.containers.GenericContainer
 
 object MockServerContainer {
 
   val layer: ZLayer[
-    Network & Slf4jLogConsumer,
+    Network with Slf4jLogConsumer,
     Throwable,
     Container,
   ] = ZLayer.scoped {
@@ -21,31 +22,32 @@ object MockServerContainer {
       )
     } yield Container(mockServer)
   }
-  private val mockServerVersion = "5.15.0"
+  private val mockServerVersion = "latest"
   private val image: DockerImageName = DockerImageName
-    .parse("mockserver/mockserver")
-    .withTag(s"mockserver-$mockServerVersion")
+    .parse("docker.io/xdevsoftware/mockserver")
+    .withTag(mockServerVersion)
 
   private def scopedTestContainer(
     logConsumer: Slf4jLogConsumer,
     network: Network,
-  ): URIO[Any & Scope, MockServerTestContainer] =
+  ): URIO[Any with Scope, GenericContainer[_]] =
     ZIO.acquireRelease(
       ZIO
-        .attempt(new MockServerTestContainer(image))
+        .attempt(new GenericContainer(image))
         .tap(container => ZIO.attempt(containerSetup(container, logConsumer, network)))
         .orDie,
     )(container => ZIO.attempt(container.stop()).ignoreLogged)
 
   private def containerSetup(
-    container: MockServerTestContainer,
+    container: GenericContainer[_],
     logConsumer: Slf4jLogConsumer,
     network: Network,
   ): Unit = {
     container.withNetwork(network)
     container.withLogConsumer(logConsumer)
+    container.withExposedPorts(1080)
     container.start()
   }
 
-  case class Container(value: MockServerTestContainer)
+  case class Container(value: GenericContainer[_])
 }

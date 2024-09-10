@@ -19,7 +19,7 @@ object KafkaSpec extends ZIOSpecDefault {
   )
   private val logs = Runtime.removeDefaultLoggers >>> consoleLogger(logConfig) >+> Slf4jBridge.initialize
 
-  def spec: Spec[Environment & TestEnvironment & Scope, Any] =
+  def spec: Spec[Environment with TestEnvironment with Scope, Any] =
     suite("Kafka tests")(basicKafkaTopicOperations).provideShared(
       ZLayer.succeed(Network.SHARED),
       logs,

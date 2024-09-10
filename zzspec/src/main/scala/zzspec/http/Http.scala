@@ -10,7 +10,7 @@ object Http {
   def assertHttpResponse(
     url: String,
     responseAssertion: ResponseAssertion,
-  ): ZIO[Client with Any & Scope, Throwable, Boolean] = {
+  ): ZIO[Client with Any with Scope, Throwable, Boolean] = {
     val decodedUrl = URL.decode(url).toOption.get
 
     for {

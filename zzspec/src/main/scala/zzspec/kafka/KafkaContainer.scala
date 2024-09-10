@@ -7,7 +7,7 @@ import zio._
 
 object KafkaContainer {
 
-  val layer: ZLayer[Slf4jLogConsumer & Network, Throwable, KafkaTestContainer] =
+  val layer: ZLayer[Slf4jLogConsumer with Network, Throwable, KafkaTestContainer] =
     ZLayer.scoped {
       for {
         logConsumer <- ZIO.service[Slf4jLogConsumer]
@@ -20,18 +20,17 @@ object KafkaContainer {
     }
   private val image: DockerImageName = DockerImageName
     .parse(
-      "docker.io/chainguard/kafka:sha256-79a7058bfd4f873582649d77f4f0352bb6c29518925a8b57105b56eaab592b17.sig",
+      "docker.io/apache/kafka:3.8.0",
     )
     .asCompatibleSubstituteFor("confluentinc/cp-kafka")
 
   private def scopedTestContainer(
     logConsumer: Slf4jLogConsumer,
     network: Network,
-  ): URIO[Any & Scope, KafkaTestContainer] = {
+  ): URIO[Any with Scope, KafkaTestContainer] = {
     def prepContainer(container: KafkaTestContainer) =
       ZIO.attempt {
         container.withNetwork(network)
-        container.withKraft()
         container.withLogConsumer(logConsumer)
         container.start()
       }
