@@ -32,7 +32,7 @@ object KafkaProducer {
     } yield recordMetadata
   }
 
-  def producerLayer: ZLayer[KafkaContainer with Scope, Throwable, Producer] =
+  def layer: ZLayer[KafkaContainer with Scope, Throwable, Producer] =
     ZLayer {
       for {
         kafkaContainer <- ZIO.service[KafkaContainer]
