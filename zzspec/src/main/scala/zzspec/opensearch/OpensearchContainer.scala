@@ -1,12 +1,12 @@
 package zzspec.opensearch
 
-import org.opensearch.testcontainers.OpensearchContainer as OpensearchTestContainer
+import org.opensearch.testcontainers.{OpensearchContainer => OpensearchTestContainer}
 import org.testcontainers.containers.Network
 import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.utility.DockerImageName
-import zio.*
+import zio._
 
-import scala.jdk.CollectionConverters.*
+import scala.jdk.CollectionConverters._
 
 object OpensearchContainer {
 
@@ -16,7 +16,7 @@ object OpensearchContainer {
       logConsumer <- ZIO.service[Slf4jLogConsumer]
       opensearch <- scopedTestContainer(logConsumer, network)
       _ <- ZIO.logInfo(
-        s"[BB] Opensearch started at: http://${opensearch.getHost}:${opensearch.getMappedPort(9200)})",
+        s"[ZZSpec] Opensearch started at: http://${opensearch.getHost}:${opensearch.getMappedPort(9200)})",
       )
     } yield Container(opensearch)
   }

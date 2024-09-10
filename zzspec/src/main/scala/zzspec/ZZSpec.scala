@@ -1,6 +1,6 @@
 package zzspec
 
-import zio.*
+import zio._
 import zio.process.Command
 
 import java.io.File
@@ -16,7 +16,7 @@ object ZZSpec {
 
   def runSbtTestCase(testCase: SbtTestCase): ZIO[Any, Throwable, Unit] =
     for {
-      _ <- ZIO.logInfo("[BB] Starting a new module run ...")
+      _ <- ZIO.logInfo("[ZZSpec] Starting a new module run ...")
 
       runTaskCmd = Command(
         "sbt",

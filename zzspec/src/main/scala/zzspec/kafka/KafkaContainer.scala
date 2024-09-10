@@ -1,9 +1,9 @@
 package zzspec.kafka
 
 import org.testcontainers.containers.output.Slf4jLogConsumer
-import org.testcontainers.containers.{KafkaContainer as KafkaTestContainer, Network}
+import org.testcontainers.containers.{KafkaContainer => KafkaTestContainer, Network}
 import org.testcontainers.utility.DockerImageName
-import zio.*
+import zio._
 
 object KafkaContainer {
 
@@ -14,7 +14,7 @@ object KafkaContainer {
         network <- ZIO.service[Network]
         kafka <- scopedTestContainer(logConsumer, network)
         _ <- ZIO.logInfo(
-          s"[BB] Kafka started at: ${kafka.getBootstrapServers}",
+          s"[ZZSpec] Kafka started at: ${kafka.getBootstrapServers}",
         )
       } yield kafka
     }

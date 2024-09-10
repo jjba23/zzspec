@@ -1,15 +1,15 @@
 package postgresqltest
 
-import zzspec.postgresql.PostgreSQL.DDL.{createTable, dropTable, Column as DDLColumn, CreateTable}
-import zzspec.postgresql.PostgreSQL.DQL.*
-import zzspec.postgresql.PostgreSQL.*
-import zzspec.postgresql.*
+import zzspec.postgresql.PostgreSQL.DDL.{createTable, dropTable, Column => DDLColumn, CreateTable}
+import zzspec.postgresql.PostgreSQL.DQL._
+import zzspec.postgresql.PostgreSQL._
+import zzspec.postgresql._
 import org.testcontainers.containers.Network
 import org.testcontainers.containers.output.Slf4jLogConsumer
-import zio.*
-import zio.logging.*
+import zio._
+import zio.logging._
 import zio.logging.slf4j.bridge.Slf4jBridge
-import zio.test.*
+import zio.test._
 
 import java.util.UUID
 

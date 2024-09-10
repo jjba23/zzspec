@@ -1,6 +1,6 @@
 package zzspec.mockserver
 
-import zzspec.mockserver.MockServerContainer.*
+import zzspec.mockserver.MockServerContainer._
 import org.mockserver.client.MockServerClient
 import zio.{ZIO, ZLayer}
 

@@ -1,7 +1,7 @@
 package zzspec.http
 
-import zio.*
-import zio.http.*
+import zio._
+import zio.http._
 
 object Http {
 

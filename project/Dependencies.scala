@@ -1,5 +1,5 @@
-import sbt.Keys.*
-import sbt.*
+import sbt.Keys._
+import sbt._
 
 object Dependencies extends AutoPlugin {
 
@@ -68,7 +68,6 @@ object Dependencies extends AutoPlugin {
       ZioKafka,
       ZioKafkaTest,
       ZioHttp,
-      KafkaProtobufSerializer,
       TestcontainersOpensearch,
       TestcontainersPostgresql,
       TestcontainersKafka,

@@ -1,9 +1,9 @@
 package zzspec.postgresql
 
 import org.testcontainers.containers.output.Slf4jLogConsumer
-import org.testcontainers.containers.{Network, PostgreSQLContainer as PostgreSQLTestContainer}
+import org.testcontainers.containers.{Network, PostgreSQLContainer => PostgreSQLTestContainer}
 import org.testcontainers.utility.DockerImageName
-import zio.*
+import zio._
 
 object PostgreSQLContainer {
 
@@ -22,7 +22,9 @@ object PostgreSQLContainer {
       network <- ZIO.service[Network]
       logConsumer <- ZIO.service[Slf4jLogConsumer]
       postgresql <- scopedTestContainer(settings, logConsumer, network)
-      _ <- ZIO.logInfo(s"[BB] PostgreSQL started at: http://${postgresql.getHost}:${postgresql.getMappedPort(5432)})")
+      _ <- ZIO.logInfo(
+        s"[ZZSpec] PostgreSQL started at: http://${postgresql.getHost}:${postgresql.getMappedPort(5432)})"
+      )
     } yield Container(postgresql)
   }
   private val image: DockerImageName =

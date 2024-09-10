@@ -1,7 +1,7 @@
 package zzspec.postgresql
 
-import zzspec.postgresql.PostgreSQL.DQL.*
-import scalikejdbc.*
+import zzspec.postgresql.PostgreSQL.DQL._
+import scalikejdbc._
 import zio.{Scope, Task, ZIO}
 
 import java.time.ZonedDateTime

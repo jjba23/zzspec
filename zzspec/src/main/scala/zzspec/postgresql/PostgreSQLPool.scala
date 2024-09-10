@@ -1,7 +1,7 @@
 package zzspec.postgresql
 
-import scalikejdbc.*
-import zio.*
+import scalikejdbc._
+import zio._
 
 case class PostgreSQLPool()
 

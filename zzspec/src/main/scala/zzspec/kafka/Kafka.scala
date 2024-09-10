@@ -1,12 +1,12 @@
 package zzspec.kafka
 
 import org.apache.kafka.clients
-import org.apache.kafka.clients.admin.{Admin as AdminClient, AdminClientConfig}
+import org.apache.kafka.clients.admin.{Admin => AdminClient, AdminClientConfig}
 import org.testcontainers.containers.KafkaContainer
-import zio.*
+import zio._
 
 import java.util.Properties
-import scala.jdk.CollectionConverters.*
+import scala.jdk.CollectionConverters._
 
 case class NewTopic(name: String, partitions: Int, replicationFactor: Short, configs: Map[String, String])
 

@@ -4,11 +4,11 @@ import zzspec.kafka.{Kafka, KafkaContainer, NewTopic}
 import org.apache.kafka.common.config.TopicConfig
 import org.testcontainers.containers
 import org.testcontainers.containers.output.Slf4jLogConsumer
-import org.testcontainers.containers.{KafkaContainer as KafkaTestContainer, Network}
-import zio.*
-import zio.logging.*
+import org.testcontainers.containers.{KafkaContainer => KafkaTestContainer, Network}
+import zio._
+import zio.logging._
 import zio.logging.slf4j.bridge.Slf4jBridge
-import zio.test.*
+import zio.test._
 
 object KafkaSpec extends ZIOSpecDefault {
 

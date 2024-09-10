@@ -2,38 +2,36 @@ package zzspec.kafka
 
 import org.apache.kafka.clients.producer.RecordMetadata
 import org.testcontainers.containers.KafkaContainer
-import zio.*
+import zio._
 import zio.kafka.producer.{Producer, ProducerSettings}
-import zio.kafka.serde.*
+import zio.kafka.serde._
 
-import scala.jdk.CollectionConverters.*
+import scala.jdk.CollectionConverters._
 
 object KafkaProducer {
 
-  def runProducer[T <: com.google.protobuf.Message](
+  def runProducer(
     topicName: String,
     key: String,
-    value: T,
+    value: Array[Byte],
   ): ZIO[
     Producer & KafkaContainer,
     Throwable,
     RecordMetadata,
-  ] =
+  ] = {
     for {
-      serializer =
-        new KafkaJsonSerializer[T](
-        )
-      serializedValue: Array[Byte] = serializer.serialize(topicName, value)
+
       recordMetadata <- Producer.produce[Any, String, Array[Byte]](
         topic = topicName,
         key = key,
-        value = serializedValue,
+        value = value,
         keySerializer = Serde.string,
         valueSerializer = Serde.byteArray,
       )
-      _ <- ZIO.logInfo(s"[BB] Published record with key: $key to Kafka")
+      _ <- ZIO.logInfo(s"[ZZSpec] Published record with key: $key to Kafka")
 
     } yield recordMetadata
+  }
 
   def producerLayer: ZLayer[KafkaContainer & Scope, Throwable, Producer] =
     ZLayer {

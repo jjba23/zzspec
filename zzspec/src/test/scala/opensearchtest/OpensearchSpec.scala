@@ -1,19 +1,19 @@
 package opensearchtest
 
-import com.sksamuel.elastic4s.http.ElasticDsl.*
+import com.sksamuel.elastic4s.http.ElasticDsl._
 import com.sksamuel.elastic4s.{Hit, HitReader, Indexable}
-import io.circe.*
+import io.circe._
 import io.circe.generic.semiauto.deriveCodec
-import io.circe.parser.*
-import io.circe.syntax.*
-import zzspec.opensearch.Opensearch.*
+import io.circe.parser._
+import io.circe.syntax._
+import zzspec.opensearch.Opensearch._
 import zzspec.opensearch.{Opensearch, OpensearchContainer}
 import org.testcontainers.containers.Network
 import org.testcontainers.containers.output.Slf4jLogConsumer
-import zio.*
-import zio.logging.*
+import zio._
+import zio.logging._
 import zio.logging.slf4j.bridge.Slf4jBridge
-import zio.test.*
+import zio.test._
 
 import java.util.UUID
 import scala.util.Try

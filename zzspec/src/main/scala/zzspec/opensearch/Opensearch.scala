@@ -1,15 +1,15 @@
 package zzspec.opensearch
 
-import com.sksamuel.elastic4s.*
-import com.sksamuel.elastic4s.http.ElasticDsl.*
+import com.sksamuel.elastic4s._
+import com.sksamuel.elastic4s.http.ElasticDsl._
 import com.sksamuel.elastic4s.http.{ElasticClient, ElasticProperties}
 import com.sksamuel.elastic4s.searches.SearchRequest
-import zzspec.opensearch.OpensearchContainer.*
+import zzspec.opensearch.OpensearchContainer._
 import zio.{Scope, Task, ZIO, ZLayer}
 
 object Opensearch {
 
-  import ZIOTaskImplicits.*
+  import ZIOTaskImplicits._
 
   private type SearchEff[T] = ZIO[Scope & Client, Throwable, T]
   val layer: ZLayer[Container, Throwable, Client] =

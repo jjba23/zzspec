@@ -1,9 +1,9 @@
 package zzspec.mockserver
 
 import org.testcontainers.containers.output.Slf4jLogConsumer
-import org.testcontainers.containers.{MockServerContainer as MockServerTestContainer, Network}
+import org.testcontainers.containers.{MockServerContainer => MockServerTestContainer, Network}
 import org.testcontainers.utility.DockerImageName
-import zio.*
+import zio._
 
 object MockServerContainer {
 
@@ -16,7 +16,9 @@ object MockServerContainer {
       network <- ZIO.service[Network]
       logConsumer <- ZIO.service[Slf4jLogConsumer]
       mockServer <- scopedTestContainer(logConsumer, network)
-      _ <- ZIO.logInfo(s"[BB] MockServer started at: http://${mockServer.getHost}:${mockServer.getMappedPort(1080)})")
+      _ <- ZIO.logInfo(
+        s"[ZZSpec] MockServer started at: http://${mockServer.getHost}:${mockServer.getMappedPort(1080)})"
+      )
     } yield Container(mockServer)
   }
   private val mockServerVersion = "5.15.0"

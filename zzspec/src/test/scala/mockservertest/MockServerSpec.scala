@@ -5,11 +5,11 @@ import org.mockserver.model.HttpRequest.request
 import org.mockserver.model.HttpResponse.response
 import org.testcontainers.containers.Network
 import org.testcontainers.containers.output.Slf4jLogConsumer
-import zio.*
-import zio.http.*
-import zio.logging.*
+import zio._
+import zio.http._
+import zio.logging._
 import zio.logging.slf4j.bridge.Slf4jBridge
-import zio.test.*
+import zio.test._
 
 object MockServerSpec extends ZIOSpecDefault {
 
