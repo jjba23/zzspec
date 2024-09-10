@@ -2,9 +2,9 @@ package kafkatest
 
 import zzspec.kafka.{Kafka, KafkaContainer, NewTopic}
 import org.apache.kafka.common.config.TopicConfig
-import org.testcontainers.containers
 import org.testcontainers.containers.output.Slf4jLogConsumer
-import org.testcontainers.containers.{KafkaContainer => KafkaTestContainer, Network}
+import org.testcontainers.kafka.{KafkaContainer => KafkaTestContainer}
+import org.testcontainers.containers.Network
 import zio._
 import zio.logging._
 import zio.logging.slf4j.bridge.Slf4jBridge
@@ -45,7 +45,7 @@ object KafkaSpec extends ZIOSpecDefault {
       } yield assertTrue(1 == 1)
     } @@ TestAspect.timeout(1.minute)
 
-  def publishingToKafkaTopicWorks: Spec[containers.KafkaContainer, Nothing] = test("""
+  def publishingToKafkaTopicWorks: Spec[KafkaTestContainer, Nothing] = test("""
     TODO: Publishing messages to a Kafka topic works as expected
   """) {
     val topic = NewTopic(

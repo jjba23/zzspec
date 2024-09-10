@@ -1,7 +1,7 @@
 package zzspec.kafka
 
 import org.apache.kafka.clients.producer.RecordMetadata
-import org.testcontainers.containers.KafkaContainer
+import org.testcontainers.kafka.KafkaContainer
 import zio._
 import zio.kafka.producer.{Producer, ProducerSettings}
 import zio.kafka.serde._

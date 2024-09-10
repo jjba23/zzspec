@@ -1,8 +1,9 @@
 package zzspec.kafka
 
 import org.testcontainers.containers.output.Slf4jLogConsumer
-import org.testcontainers.containers.{KafkaContainer => KafkaTestContainer, Network}
+import org.testcontainers.containers.Network
 import org.testcontainers.utility.DockerImageName
+import org.testcontainers.kafka.{KafkaContainer => KafkaTestContainer}
 import zio._
 
 object KafkaContainer {
@@ -22,7 +23,7 @@ object KafkaContainer {
     .parse(
       "docker.io/apache/kafka:3.8.0",
     )
-    .asCompatibleSubstituteFor("confluentinc/cp-kafka")
+    .asCompatibleSubstituteFor("apache/kafka")
 
   private def scopedTestContainer(
     logConsumer: Slf4jLogConsumer,

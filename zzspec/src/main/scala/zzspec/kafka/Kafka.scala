@@ -2,7 +2,7 @@ package zzspec.kafka
 
 import org.apache.kafka.clients
 import org.apache.kafka.clients.admin.{Admin => AdminClient, AdminClientConfig}
-import org.testcontainers.containers.KafkaContainer
+import org.testcontainers.kafka.KafkaContainer
 import zio._
 
 import java.util.Properties

@@ -14,30 +14,31 @@ object Dependencies extends AutoPlugin {
     val Elastic4sCore = "com.sksamuel.elastic4s" %% "elastic4s-core" % "6.7.8"
     val Elastic4sHttp = "com.sksamuel.elastic4s" %% "elastic4s-http" % Elastic4sCore.revision
 
-    val CirceCore          = "io.circe" %% "circe-core"           % "0.14.6"
+    val CirceCore          = "io.circe" %% "circe-core"           % "0.14.10"
     val CirceGeneric       = "io.circe" %% "circe-generic"        % CirceCore.revision
     val CirceGenericExtras = "io.circe" %% "circe-generic-extras" % "0.14.3"
     val CirceLiteral       = "io.circe" %% "circe-literal"        % CirceCore.revision
     val CirceParser        = "io.circe" %% "circe-parser"         % CirceCore.revision
 
-    val TestcontainersKafka = "org.testcontainers" % "kafka"         % "1.19.7"
-    val KafkaClients        = "org.apache.kafka"   % "kafka-clients" % "2.8.2"
+    val KafkaClients = "org.apache.kafka" % "kafka-clients" % "2.8.2"
 
-    val Zio                   = "dev.zio" %% "zio"                       % "2.0.21"
+    val Zio                   = "dev.zio" %% "zio"                       % "2.1.9"
     val ZioTest               = "dev.zio" %% "zio-test"                  % Zio.revision
     val ZioTestMagnolia       = "dev.zio" %% "zio-test-magnolia"         % Zio.revision
     val ZioTestSbt            = "dev.zio" %% "zio-test-sbt"              % Zio.revision
-    val ZioPrelude            = "dev.zio" %% "zio-prelude"               % "1.0.0-RC21"
+    val ZioPrelude            = "dev.zio" %% "zio-prelude"               % "1.0.0-RC30"
     val ZioProcess            = "dev.zio" %% "zio-process"               % "0.7.2"
-    val ZioKafka              = "dev.zio" %% "zio-kafka"                 % "2.7.4"
+    val ZioKafka              = "dev.zio" %% "zio-kafka"                 % "2.8.2"
     val ZioKafkaTest          = "dev.zio" %% "zio-kafka-testkit"         % ZioKafka.revision % Test
-    val ZioHttp               = "dev.zio" %% "zio-http"                  % "3.0.0-RC3"
-    val ZioLogging            = "dev.zio" %% "zio-logging"               % "2.2.2"
+    val ZioHttp               = "dev.zio" %% "zio-http"                  % "3.0.0-RC10"
+    val ZioLogging            = "dev.zio" %% "zio-logging"               % "2.3.1"
     val ZioLoggingSlf4jBridge = "dev.zio" %% "zio-logging-slf4j2-bridge" % ZioLogging.revision
 
+    val Testcontainers           = "org.testcontainers" % "testcontainers"            % "1.20.1"
+    val TestcontainersKafka      = "org.testcontainers" % "kafka"                     % "1.20.1"
     val TestcontainersOpensearch = "org.opensearch"     % "opensearch-testcontainers" % "2.0.1"
-    val TestcontainersPostgresql = "org.testcontainers" % "postgresql"                % "1.19.7"
-    val TestContainersMockServer = "org.testcontainers" % "mockserver"                % "1.19.7"
+    val TestcontainersPostgresql = "org.testcontainers" % "postgresql"                % "1.20.1"
+    val TestContainersMockServer = "org.testcontainers" % "mockserver"                % "1.20.1"
 
     val Scalikejdbc = "org.scalikejdbc" %% "scalikejdbc" % "3.5.0"
     val ScalikejdbcStreams =
@@ -68,6 +69,7 @@ object Dependencies extends AutoPlugin {
       ZioKafka,
       ZioKafkaTest,
       ZioHttp,
+      Testcontainers,
       TestcontainersOpensearch,
       TestcontainersPostgresql,
       TestcontainersKafka,
