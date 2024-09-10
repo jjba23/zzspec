@@ -10,6 +10,8 @@ import zio.logging.slf4j.bridge.Slf4jBridge
 import com.fasterxml.jackson.databind.ObjectMapper
 import java.io.File
 import zzspec.kafka.NewTopic
+import java.nio.file.{Files, Paths}
+import zio.test._
 
 case class SbtTestCase(
   sbtTask: String,
@@ -61,4 +63,34 @@ object ZZSpec {
   )
   def newTopic(): NewTopic = newTopic(java.util.UUID.randomUUID().toString())
 
+}
+
+object ZZContract {
+
+  def fromTestName(
+    name: String,
+    className: String = this.getClass().toString(),
+    extension: String = ".json"
+  ): ZIO[Any, Throwable, String] = {
+    def cleanName = (x: String) => x.toLowerCase().replaceAll("\\s", "").replaceAll("[^A-Za-z0-9\\-]", "")
+    val newName = cleanName(name)
+    val newClassName = cleanName(className)
+    readTestFileOrCreate(s"$newClassName-${newName}${extension}")
+  }
+
+  def readTestFileOrCreate(fileName: String): ZIO[Any, Throwable, String] = {
+    val filePath = Paths.get("src", "main", "resources", "contracts", fileName)
+
+    for {
+      fileExists <- ZIO.attempt(Files.exists(filePath)).orElseSucceed(false)
+      contents <-
+        if (fileExists) {
+          ZIO.attempt(Files.readAllBytes(filePath)).map(_.toString)
+        } else {
+          ZIO
+            .attempt(Files.createFile(filePath))
+            .flatMap(_ => ZIO.attempt(Files.readAllBytes(filePath)).map(_.toString))
+        }
+    } yield contents
+  }
 }
