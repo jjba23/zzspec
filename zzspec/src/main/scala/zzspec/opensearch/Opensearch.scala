@@ -16,20 +16,22 @@ object Opensearch {
     ZLayer {
       for {
         opensearchContainer <- ZIO.service[Container]
-        opensearchUrl        = new StringBuilder("http://")
-                                 .append(opensearchContainer.value.getHost)
-                                 .append(":")
-                                 .append(
-                                   opensearchContainer.value.getMappedPort(9200).toString,
-                                 )
-                                 .toString()
+        opensearchUrl        =
+          new StringBuilder("http://")
+            .append(opensearchContainer.value.getHost)
+            .append(":")
+            .append(
+              opensearchContainer.value.getMappedPort(9200).toString,
+            )
+            .toString()
         client               = ElasticClient(ElasticProperties(opensearchUrl))
       } yield Client(client)
     }
 
   def countDocuments(indexName: String): SearchEff[Long] = for {
     client         <- ZIO.service[Client]
-    searchResponse <- client.value.execute(search(indexName).restTotalHitsAsInt(true))
+    searchResponse <-
+      client.value.execute(search(indexName).restTotalHitsAsInt(true))
   } yield searchResponse.result.totalHits
 
   def createNewIndex(indexName: String): SearchEff[Unit] =
@@ -38,7 +40,10 @@ object Opensearch {
   def deleteAnIndex(indexName: String): SearchEff[Unit] =
     ZIO.serviceWithZIO[Client](_.value.execute(deleteIndex(indexName))).unit
 
-  def indexDocument[T: Indexable](indexName: String, document: T): SearchEff[Unit] =
+  def indexDocument[T: Indexable](
+    indexName: String,
+    document: T
+  ): SearchEff[Unit] =
     ZIO
       .serviceWithZIO[Client](
         _.value.execute(

@@ -23,7 +23,11 @@ object ZZContract {
     val newName =
       s"${mkContractName(name)}-${mkContractName(this.getClass().toString())}.${extension}"
         .replace(s"-.$extension", s".$extension")
-    readOrCreateContract(name = newName, modulePath = modulePath, orElse = orElse)
+    readOrCreateContract(
+      name = newName,
+      modulePath = modulePath,
+      orElse = orElse
+    )
   }
 
   private def writeContractToFile(
@@ -31,7 +35,9 @@ object ZZContract {
   )(content: String): ZIO[Any with Scope, Throwable, Unit] =
     for {
       w <-
-        ZIO.acquireRelease(ZIO.attempt(new FileWriter(fileName)))(w => ZIO.attempt(w.close()).orDie)
+        ZIO.acquireRelease(ZIO.attempt(new FileWriter(fileName)))(w =>
+          ZIO.attempt(w.close()).orDie
+        )
       _ <- ZIO.attempt(w.write(content))
     } yield ()
 
@@ -44,7 +50,8 @@ object ZZContract {
     val path     = Path.of(s"$modulePath/" + basePath.toString() + s"/$name")
 
     val readFileContents    = ZIO.attempt(Files.readString(path))
-    val writeFallbackToFile = orElse.map(writeContractToFile(path.toString())).getOrElse(ZIO.unit)
+    val writeFallbackToFile =
+      orElse.map(writeContractToFile(path.toString())).getOrElse(ZIO.unit)
 
     for {
       fileExists <- ZIO.attempt(Files.exists(path)).orElseSucceed(false)

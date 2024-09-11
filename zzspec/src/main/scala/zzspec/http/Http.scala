@@ -5,7 +5,10 @@ import zio.http._
 
 object Http {
 
-  case class ResponseAssertion(expectedStatusCode: Option[Int], expectedBody: Option[String])
+  case class ResponseAssertion(
+    expectedStatusCode: Option[Int],
+    expectedBody: Option[String]
+  )
 
   def assertHttpResponse(
     url: String,
@@ -19,8 +22,10 @@ object Http {
       res              <- client.url(decodedUrl).get("/")
       _                <- ZIO.logInfo(s"HTTP response: $res")
       bodyData         <- res.body.asString
-      matchesStatusCode = responseAssertion.expectedStatusCode.fold(true)(_ == res.status.code)
-      matchesBody       = responseAssertion.expectedBody.fold(true)(b => bodyData.trim == b.trim)
+      matchesStatusCode =
+        responseAssertion.expectedStatusCode.fold(true)(_ == res.status.code)
+      matchesBody       =
+        responseAssertion.expectedBody.fold(true)(b => bodyData.trim == b.trim)
     } yield (matchesStatusCode && matchesBody)
   }
 }

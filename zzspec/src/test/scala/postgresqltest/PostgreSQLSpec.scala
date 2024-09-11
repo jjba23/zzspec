@@ -17,25 +17,28 @@ import zzspec.ZZSpec.containerLogger
 
 object PostgreSQLSpec extends ZIOSpecDefault {
 
-  val testTable: CreateTable                                       = CreateTable(
-    name = UUID.randomUUID().toString,
-    columns = Seq(
-      DDLColumn(name = "id", dataType = "VARCHAR NOT NULL PRIMARY KEY"),
-      DDLColumn(name = "some_int", dataType = "INT NOT NULL"),
-      DDLColumn(name = "some_bool", dataType = "BOOLEAN NOT NULL"),
-    ),
-  )
-  def spec: Spec[Environment with TestEnvironment with Scope, Any] =
-    suite("PostgreSQL query tests")(basicPostgreSQLOperationsTest).provideShared(
-      Scope.default,
-      networkLayer,
-      containerLogger,
-      PostgreSQLContainer.Settings.default,
-      PostgreSQLContainer.layer,
-      PostgreSQLPool.layer,
+  val testTable: CreateTable                                       =
+    CreateTable(
+      name = UUID.randomUUID().toString,
+      columns = Seq(
+        DDLColumn(name = "id", dataType = "VARCHAR NOT NULL PRIMARY KEY"),
+        DDLColumn(name = "some_int", dataType = "INT NOT NULL"),
+        DDLColumn(name = "some_bool", dataType = "BOOLEAN NOT NULL"),
+      ),
     )
+  def spec: Spec[Environment with TestEnvironment with Scope, Any] =
+    suite("PostgreSQL query tests")(basicPostgreSQLOperationsTest)
+      .provideShared(
+        Scope.default,
+        networkLayer,
+        containerLogger,
+        PostgreSQLContainer.Settings.default,
+        PostgreSQLContainer.layer,
+        PostgreSQLPool.layer,
+      )
 
-  def basicPostgreSQLOperationsTest: Spec[PostgreSQLPool with Scope, Throwable] =
+  def basicPostgreSQLOperationsTest
+    : Spec[PostgreSQLPool with Scope, Throwable] =
     test("""
     Drop a table.
     Create a table.
@@ -59,9 +62,12 @@ object PostgreSQLSpec extends ZIOSpecDefault {
         """)
 
         totalRowCountInTestTable <- countTable(testTable.name)
-        constrainedRowCount      <- countTable(testTable.name, Seq(Where("id", "=", "a")))
-        constrainedRowCount2     <- countTable(testTable.name, Seq(Where("some_int", "=", 1)))
-        constrainedRowCount3     <- countTable(testTable.name, Seq(Where("some_bool", "=", true)))
+        constrainedRowCount      <-
+          countTable(testTable.name, Seq(Where("id", "=", "a")))
+        constrainedRowCount2     <-
+          countTable(testTable.name, Seq(Where("some_int", "=", 1)))
+        constrainedRowCount3     <-
+          countTable(testTable.name, Seq(Where("some_bool", "=", true)))
         maybeRowOfId2            <- fetchRow(
                                       testTable.name,
                                       Seq(

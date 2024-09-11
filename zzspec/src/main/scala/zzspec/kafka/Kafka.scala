@@ -17,18 +17,24 @@ case class NewTopic(
 
 object Kafka {
 
-  def deleteTopic(topicName: String): ZIO[KafkaContainer, Throwable, Unit]        = deleteTopics(
-    Seq(topicName)
-  )
-  def deleteTopics(topicNames: Seq[String]): ZIO[KafkaContainer, Throwable, Unit] =
+  def deleteTopic(topicName: String): ZIO[KafkaContainer, Throwable, Unit] =
+    deleteTopics(
+      Seq(topicName)
+    )
+  def deleteTopics(
+    topicNames: Seq[String]
+  ): ZIO[KafkaContainer, Throwable, Unit] =
     for {
       kafkaContainer <- ZIO.service[KafkaContainer]
       adminClient    <- createAdminClient(kafkaContainer.getBootstrapServers)
       _              <- ZIO.attempt(adminClient.deleteTopics(topicNames.asJavaCollection))
     } yield ()
 
-  def createTopic(topic: NewTopic): ZIO[KafkaContainer, Throwable, Unit]        = createTopics(Seq(topic))
-  def createTopics(topics: Seq[NewTopic]): ZIO[KafkaContainer, Throwable, Unit] =
+  def createTopic(topic: NewTopic): ZIO[KafkaContainer, Throwable, Unit] =
+    createTopics(Seq(topic))
+  def createTopics(
+    topics: Seq[NewTopic]
+  ): ZIO[KafkaContainer, Throwable, Unit] =
     for {
       kafkaContainer <- ZIO.service[KafkaContainer]
       adminClient    <- createAdminClient(kafkaContainer.getBootstrapServers)
@@ -37,7 +43,8 @@ object Kafka {
     } yield ()
 
   private def toJavaKafkaTopic(t: NewTopic) =
-    new clients.admin.NewTopic(t.name, t.partitions, t.replicationFactor).configs(t.configs.asJava)
+    new clients.admin.NewTopic(t.name, t.partitions, t.replicationFactor)
+      .configs(t.configs.asJava)
 
   private def createAdminClient(bootstrapServers: String): Task[AdminClient] = {
     val props = new Properties()

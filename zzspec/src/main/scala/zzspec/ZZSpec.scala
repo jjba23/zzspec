@@ -29,7 +29,9 @@ object ZZSpec {
       runTaskCmd =
         Command(
           "sbt",
-          testCase.moduleName.fold(testCase.sbtTask)(module => s"$module/${testCase.sbtTask}"),
+          testCase.moduleName.fold(testCase.sbtTask)(module =>
+            s"$module/${testCase.sbtTask}"
+          ),
         ).copy(
           env = testCase.env,
           workingDirectory = Some(new File(testCase.testLocation)),
@@ -57,7 +59,8 @@ object ZZSpec {
     ),
   )
 
-  def newTopic(): Task[NewTopic] = nextRandom.map(uuid => newTopic(uuid.toString))
+  def newTopic(): Task[NewTopic] =
+    nextRandom.map(uuid => newTopic(uuid.toString))
 
   def nextRandom: Task[UUID] = ZIO.attempt(java.util.UUID.randomUUID())
 

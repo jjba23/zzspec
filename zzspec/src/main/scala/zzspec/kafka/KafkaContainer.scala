@@ -8,7 +8,8 @@ import zio._
 
 object KafkaContainer {
 
-  val layer: ZLayer[Slf4jLogConsumer with Network, Throwable, KafkaTestContainer] =
+  val layer
+    : ZLayer[Slf4jLogConsumer with Network, Throwable, KafkaTestContainer] =
     ZLayer.scoped {
       for {
         logConsumer <- ZIO.service[Slf4jLogConsumer]
@@ -19,7 +20,7 @@ object KafkaContainer {
                        )
       } yield kafka
     }
-  private val image: DockerImageName                                              = DockerImageName
+  private val image: DockerImageName = DockerImageName
     .parse(
       "docker.io/apache/kafka:3.8.0",
     )

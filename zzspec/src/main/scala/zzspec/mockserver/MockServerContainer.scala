@@ -34,7 +34,9 @@ object MockServerContainer {
     ZIO.acquireRelease(
       ZIO
         .attempt(new GenericContainer(image))
-        .tap(container => ZIO.attempt(containerSetup(container, logConsumer, network)))
+        .tap(container =>
+          ZIO.attempt(containerSetup(container, logConsumer, network))
+        )
         .orDie,
     )(container => ZIO.attempt(container.stop()).ignoreLogged)
 

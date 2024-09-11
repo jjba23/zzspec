@@ -32,7 +32,8 @@ object OpensearchSpec extends ZIOSpecDefault {
     def json(t: DummyData): String = t.asJson.toString()
   }
   private implicit object HitReaderDummyData extends HitReader[DummyData] {
-    def read(hit: Hit): Try[DummyData] = decode[DummyData](hit.sourceAsString).toTry
+    def read(hit: Hit): Try[DummyData] =
+      decode[DummyData](hit.sourceAsString).toTry
   }
 
   def spec: Spec[Environment with TestEnvironment with Scope, Any] =
@@ -45,8 +46,10 @@ object OpensearchSpec extends ZIOSpecDefault {
       Opensearch.layer,
     )
 
-  def basicOpensearchOperations
-    : Spec[Scope with Opensearch.Client with OpensearchContainer.Container with Scope, Throwable] =
+  def basicOpensearchOperations: Spec[
+    Scope with Opensearch.Client with OpensearchContainer.Container with Scope,
+    Throwable
+  ] =
     test("""
     Delete an index.
     Create an index.
@@ -73,7 +76,8 @@ object OpensearchSpec extends ZIOSpecDefault {
 
         constrainedResultSet <-
           searchDocument[DummyData](
-            search(testIndex).query(boolQuery().must(matchQuery("someString", "open search"))),
+            search(testIndex)
+              .query(boolQuery().must(matchQuery("someString", "open search"))),
           )
         parsedDocs            = constrainedResultSet.collect { case Right(value) => value }
         errorDocs             = constrainedResultSet.collect { case Left(value) => value }

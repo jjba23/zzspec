@@ -10,7 +10,11 @@ import scala.jdk.CollectionConverters._
 
 object OpensearchContainer {
 
-  val layer: ZLayer[Settings with Network with Slf4jLogConsumer, Throwable, Container] =
+  val layer: ZLayer[
+    Settings with Network with Slf4jLogConsumer,
+    Throwable,
+    Container
+  ] =
     ZLayer.scoped {
       for {
         network     <- ZIO.service[Network]
@@ -22,8 +26,9 @@ object OpensearchContainer {
           )
       } yield Container(opensearch)
     }
-  private val image: DockerImageName                                                   = DockerImageName.parse("opensearchproject/opensearch:1.3.13")
-  private val defaultSettings                                                          = Settings(maxMemoryMb = 1300)
+  private val image: DockerImageName =
+    DockerImageName.parse("opensearchproject/opensearch:1.3.13")
+  private val defaultSettings        = Settings(maxMemoryMb = 1300)
 
   private def scopedTestContainer(
     logConsumer: Slf4jLogConsumer,

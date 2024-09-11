@@ -20,7 +20,10 @@ import zzspec.ZZContract._
 object KafkaSpec extends ZIOSpecDefault {
 
   def spec: Spec[Environment with TestEnvironment with Scope, Any] =
-    suite("Kafka tests")(basicKafkaTopicOperations, publishingAndConsumingKafkaTopicWorks)
+    suite("Kafka tests")(
+      basicKafkaTopicOperations,
+      publishingAndConsumingKafkaTopicWorks
+    )
       .provideShared(
         containerLogger,
         networkLayer,
@@ -41,7 +44,11 @@ object KafkaSpec extends ZIOSpecDefault {
       } yield assertTrue(1 == 1)
     } @@ TestAspect.timeout(8.seconds)
 
-  case class SomeMessage(stringValue: String, intValue: Int, stringListValue: Seq[String])
+  case class SomeMessage(
+    stringValue: String,
+    intValue: Int,
+    stringListValue: Seq[String]
+  )
 
   def publishingAndConsumingKafkaTopicWorks = {
     val testCaseName = """
@@ -66,13 +73,20 @@ object KafkaSpec extends ZIOSpecDefault {
         // when
         consumedMessages     <-
           ZIO.serviceWithZIO[Consumer](
-            _.plainStream(Subscription.Topics(Set(topic.name)), Serde.string, Serde.string)
+            _.plainStream(
+              Subscription.Topics(Set(topic.name)),
+              Serde.string,
+              Serde.string
+            )
               .take(1)
               .runCollect
           )
 
         // then
-        firstMessage         <- parseJson(consumedMessages.map(r => (r.record.key, r.record.value)).head._2)
+        firstMessage         <-
+          parseJson(
+            consumedMessages.map(r => (r.record.key, r.record.value)).head._2
+          )
         expectedFirstMessage <- contractFromTestName(
                                   name = testCaseName,
                                   modulePath = "zzspec",

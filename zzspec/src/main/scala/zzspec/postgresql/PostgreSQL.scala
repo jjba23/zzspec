@@ -23,22 +23,24 @@ object PostgreSQL {
     }
   }
 
-  def countTable(tableName: String): DBEff[Long] = countTable(tableName, Seq.empty)
+  def countTable(tableName: String): DBEff[Long] =
+    countTable(tableName, Seq.empty)
 
-  def countTable(tableName: String, constraints: Seq[Where]): DBEff[Long] = ZIO.attemptBlocking {
-    val where = makeWhereConstraints(constraints)
-    val stmt  = s"""
+  def countTable(tableName: String, constraints: Seq[Where]): DBEff[Long] =
+    ZIO.attemptBlocking {
+      val where = makeWhereConstraints(constraints)
+      val stmt  = s"""
       SELECT COUNT(1) as bb_count FROM "$tableName" WHERE $where;
     """
 
-    val count = DB.readOnly { implicit session =>
-      SQL(stmt)
-        .map(_.long("bb_count"))
-        .single()
-    }
+      val count = DB.readOnly { implicit session =>
+        SQL(stmt)
+          .map(_.long("bb_count"))
+          .single()
+      }
 
-    count.fold(0.toLong)(identity)
-  }
+      count.fold(0.toLong)(identity)
+    }
 
   private def makeWhereConstraints(constraints: Seq[Where]): String = {
     def buildConstraint(constraint: Where): String = {
@@ -92,15 +94,22 @@ object PostgreSQL {
   private def makeSerializedColumnNames(columnsToFetch: Seq[Column]): String =
     columnsToFetch.map(_.name).mkString(", ")
 
-  private def columnParse(rs: WrappedResultSet)(columnFetch: Column): ParseResult =
-    ParseResult(name = columnFetch.name, value = columnFetch.parser.eff(rs)(columnFetch.name))
+  private def columnParse(
+    rs: WrappedResultSet
+  )(columnFetch: Column): ParseResult =
+    ParseResult(
+      name = columnFetch.name,
+      value = columnFetch.parser.eff(rs)(columnFetch.name)
+    )
 
   object DDL {
 
     def createTable(create: CreateTable): DBEff[Boolean] = {
       def makeColumnDef(c: Column): String = s"${c.name} ${c.dataType}"
       executeRaw(s"""
-      CREATE TABLE "${create.name}" (${create.columns.map(makeColumnDef).mkString(", ")});
+      CREATE TABLE "${create.name}" (${create.columns
+          .map(makeColumnDef)
+          .mkString(", ")});
       """)
     }
 
@@ -138,7 +147,8 @@ object PostgreSQL {
 
       def double: ColumnParser = build(_.double)
 
-      private def build: (WrappedResultSet => String => Any) => ColumnParser = ColumnParser.apply
+      private def build: (WrappedResultSet => String => Any) => ColumnParser =
+        ColumnParser.apply
 
       def boolean: ColumnParser = build(_.boolean)
 

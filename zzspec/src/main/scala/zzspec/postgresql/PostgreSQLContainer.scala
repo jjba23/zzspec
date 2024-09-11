@@ -43,7 +43,9 @@ object PostgreSQLContainer {
     ZIO.acquireRelease(
       ZIO
         .attempt(new PostgreSQLTestContainer(image))
-        .tap(container => ZIO.attempt(containerSetup(container, settings, logConsumer, network)))
+        .tap(container =>
+          ZIO.attempt(containerSetup(container, settings, logConsumer, network))
+        )
         .orDie,
     )(container => ZIO.attempt(container.stop()).ignoreLogged)
 

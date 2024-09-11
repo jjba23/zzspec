@@ -26,7 +26,11 @@ object MockServerSpec extends ZIOSpecDefault {
     ) @@ TestAspect.withLiveClock
 
   def basicMockServerOperations: Spec[
-    Scope with MockServer.Client with MockServerContainer.Container with Client with Scope,
+    Scope
+      with MockServer.Client
+      with MockServerContainer.Container
+      with Client
+      with Scope,
     Throwable
   ] =
     test("""
@@ -38,7 +42,11 @@ object MockServerSpec extends ZIOSpecDefault {
         mockServerContainer <- ZIO.service[MockServerContainer.Container]
 
         _ = mockServerClient.value
-              .when(request().withPath("/person").withQueryStringParameter("name", "legolas"))
+              .when(
+                request()
+                  .withPath("/person")
+                  .withQueryStringParameter("name", "legolas")
+              )
               .respond(response().withBody(someResponseBody))
 
         mockServerUrl       = new StringBuilder("http://")
@@ -48,7 +56,9 @@ object MockServerSpec extends ZIOSpecDefault {
                                 .toString()
         parsedMockServerUrl = URL.decode(mockServerUrl).toOption.get
 
-        res     <- ZIO.serviceWithZIO[Client](_.url(parsedMockServerUrl).get("/person?name=legolas"))
+        res     <- ZIO.serviceWithZIO[Client](
+                     _.url(parsedMockServerUrl).get("/person?name=legolas")
+                   )
         reqBody <- res.body.asString
       } yield assertTrue(reqBody == someResponseBody)
     }
