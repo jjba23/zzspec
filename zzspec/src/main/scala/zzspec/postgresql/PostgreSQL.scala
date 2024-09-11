@@ -1,8 +1,8 @@
 package zzspec.postgresql
 
-import zzspec.postgresql.PostgreSQL.DQL._
 import scalikejdbc._
 import zio.{Scope, Task, ZIO}
+import zzspec.postgresql.PostgreSQL.DQL._
 
 import java.time.ZonedDateTime
 import java.util.Date
@@ -27,7 +27,7 @@ object PostgreSQL {
 
   def countTable(tableName: String, constraints: Seq[Where]): DBEff[Long] = ZIO.attemptBlocking {
     val where = makeWhereConstraints(constraints)
-    val stmt = s"""
+    val stmt  = s"""
       SELECT COUNT(1) as bb_count FROM "$tableName" WHERE $where;
     """
 
@@ -44,11 +44,11 @@ object PostgreSQL {
     def buildConstraint(constraint: Where): String = {
       val encodedValue = constraint.value match {
         case x: Boolean => Encoders.boolean(x)
-        case x: Int => Encoders.int(x)
-        case x: Long => Encoders.long(x)
-        case x: Double => Encoders.double(x)
-        case x: String => Encoders.string(x)
-        case x: Any => Encoders.string(x.toString)
+        case x: Int     => Encoders.int(x)
+        case x: Long    => Encoders.long(x)
+        case x: Double  => Encoders.double(x)
+        case x: String  => Encoders.string(x)
+        case x: Any     => Encoders.string(x.toString)
       }
       s"${constraint.name} ${constraint.operator} $encodedValue"
     }
@@ -70,7 +70,7 @@ object PostgreSQL {
     constraints: Seq[Where],
   ): Task[MaybeRow] = ZIO.attemptBlocking {
     val columns: String = makeSerializedColumnNames(columnsToFetch)
-    val where: String = makeWhereConstraints(constraints)
+    val where: String   = makeWhereConstraints(constraints)
 
     val stmt = s"""
     SELECT $columns FROM "$tableName" WHERE $where LIMIT 1;
@@ -150,12 +150,12 @@ object PostgreSQL {
 
   object Encoders {
 
-    def string(x: String): String = s"'$x'"
-    def int(x: Int): String = s"$x"
-    def long(x: Long): String = s"$x"
-    def double(x: Double): String = s"$x"
-    def boolean(x: Boolean): String = if (x) "TRUE" else "FALSE"
-    def date(x: Date): String = s"'$x'"
+    def string(x: String): String               = s"'$x'"
+    def int(x: Int): String                     = s"$x"
+    def long(x: Long): String                   = s"$x"
+    def double(x: Double): String               = s"$x"
+    def boolean(x: Boolean): String             = if (x) "TRUE" else "FALSE"
+    def date(x: Date): String                   = s"'$x'"
     def zonedDateTime(x: ZonedDateTime): String = s"'$x'"
   }
 }

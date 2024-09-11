@@ -4,8 +4,8 @@ import com.sksamuel.elastic4s._
 import com.sksamuel.elastic4s.http.ElasticDsl._
 import com.sksamuel.elastic4s.http.{ElasticClient, ElasticProperties}
 import com.sksamuel.elastic4s.searches.SearchRequest
-import zzspec.opensearch.OpensearchContainer._
 import zio.{Scope, Task, ZIO, ZLayer}
+import zzspec.opensearch.OpensearchContainer._
 
 object Opensearch {
 
@@ -16,19 +16,19 @@ object Opensearch {
     ZLayer {
       for {
         opensearchContainer <- ZIO.service[Container]
-        opensearchUrl = new StringBuilder("http://")
-          .append(opensearchContainer.value.getHost)
-          .append(":")
-          .append(
-            opensearchContainer.value.getMappedPort(9200).toString,
-          )
-          .toString()
-        client = ElasticClient(ElasticProperties(opensearchUrl))
+        opensearchUrl        = new StringBuilder("http://")
+                                 .append(opensearchContainer.value.getHost)
+                                 .append(":")
+                                 .append(
+                                   opensearchContainer.value.getMappedPort(9200).toString,
+                                 )
+                                 .toString()
+        client               = ElasticClient(ElasticProperties(opensearchUrl))
       } yield Client(client)
     }
 
   def countDocuments(indexName: String): SearchEff[Long] = for {
-    client <- ZIO.service[Client]
+    client         <- ZIO.service[Client]
     searchResponse <- client.value.execute(search(indexName).restTotalHitsAsInt(true))
   } yield searchResponse.result.totalHits
 
@@ -49,10 +49,12 @@ object Opensearch {
       )
       .unit
 
-  def searchDocument[T: HitReader](searchRequest: SearchRequest): SearchEff[List[Either[Throwable, T]]] =
+  def searchDocument[T: HitReader](
+    searchRequest: SearchRequest
+  ): SearchEff[List[Either[Throwable, T]]] =
     for {
-      client <- ZIO.service[Client]
-      resp <- client.value.execute(searchRequest.restTotalHitsAsInt(true))
+      client         <- ZIO.service[Client]
+      resp           <- client.value.execute(searchRequest.restTotalHitsAsInt(true))
       maybeParsedDocs = resp.result.safeTo[T].toList.map(_.toEither)
     } yield maybeParsedDocs
 
@@ -67,10 +69,11 @@ trait ZIOTaskImplicits extends {
     override def map[A, B](fa: Task[A])(f: A => B): Task[B] = fa.map(f)
   }
 
-  implicit val executor: http.Executor[Task] = (client: http.HttpClient, request: http.ElasticRequest) =>
-    ZIO.asyncZIO { cb =>
-      ZIO.attempt(client.send(request, v => cb(ZIO.fromEither(v))))
-    }
+  implicit val executor: http.Executor[Task] =
+    (client: http.HttpClient, request: http.ElasticRequest) =>
+      ZIO.asyncZIO { cb =>
+        ZIO.attempt(client.send(request, v => cb(ZIO.fromEither(v))))
+      }
 }
 
 object ZIOTaskImplicits extends ZIOTaskImplicits

@@ -10,24 +10,26 @@ import scala.jdk.CollectionConverters._
 
 object OpensearchContainer {
 
-  val layer: ZLayer[Settings with Network with Slf4jLogConsumer, Throwable, Container] = ZLayer.scoped {
-    for {
-      network <- ZIO.service[Network]
-      logConsumer <- ZIO.service[Slf4jLogConsumer]
-      opensearch <- scopedTestContainer(logConsumer, network)
-      _ <- ZIO.logInfo(
-        s"[ZZSpec] Opensearch started at: http://${opensearch.getHost}:${opensearch.getMappedPort(9200)})",
-      )
-    } yield Container(opensearch)
-  }
-  private val image: DockerImageName = DockerImageName.parse("opensearchproject/opensearch:1.3.13")
-  private val defaultSettings = Settings(maxMemoryMb = 1300)
+  val layer: ZLayer[Settings with Network with Slf4jLogConsumer, Throwable, Container] =
+    ZLayer.scoped {
+      for {
+        network     <- ZIO.service[Network]
+        logConsumer <- ZIO.service[Slf4jLogConsumer]
+        opensearch  <- scopedTestContainer(logConsumer, network)
+        _           <-
+          ZIO.logInfo(
+            s"[ZZSpec] Opensearch started at: http://${opensearch.getHost}:${opensearch.getMappedPort(9200)})",
+          )
+      } yield Container(opensearch)
+    }
+  private val image: DockerImageName                                                   = DockerImageName.parse("opensearchproject/opensearch:1.3.13")
+  private val defaultSettings                                                          = Settings(maxMemoryMb = 1300)
 
   private def scopedTestContainer(
     logConsumer: Slf4jLogConsumer,
     network: Network,
   ): URIO[Any with Scope, OpensearchTestContainer[?]] = {
-    def prepContainer(container: OpensearchTestContainer[?]) =
+    def prepContainer(container: OpensearchTestContainer[?])     =
       ZIO.attempt {
         container.withEnv(
           Map.from(Seq("discovery.type" -> "single-node")).asJava,

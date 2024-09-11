@@ -59,23 +59,24 @@ object OpensearchSpec extends ZIOSpecDefault {
     Verify fetching and parsing a document meets expectation.
     """) {
 
-      val testIndex = s"index-${UUID.randomUUID()}"
-      val someDocument = DummyData("some document")
+      val testIndex         = s"index-${UUID.randomUUID()}"
+      val someDocument      = DummyData("some document")
       val someOtherDocument = DummyData("open search")
 
       for {
-        _ <- deleteAnIndex(testIndex)
-        _ <- createNewIndex(testIndex)
-        initialDocumentCountInTestIndex <- countDocuments(testIndex)
-        _ <- indexDocument(testIndex, someDocument)
-        _ <- indexDocument(testIndex, someOtherDocument)
+        _                                   <- deleteAnIndex(testIndex)
+        _                                   <- createNewIndex(testIndex)
+        initialDocumentCountInTestIndex     <- countDocuments(testIndex)
+        _                                   <- indexDocument(testIndex, someDocument)
+        _                                   <- indexDocument(testIndex, someOtherDocument)
         afterInsertDocumentCountInTestIndex <- countDocuments(testIndex)
 
-        constrainedResultSet <- searchDocument[DummyData](
-          search(testIndex).query(boolQuery().must(matchQuery("someString", "open search"))),
-        )
-        parsedDocs = constrainedResultSet.collect { case Right(value) => value }
-        errorDocs = constrainedResultSet.collect { case Left(value) => value }
+        constrainedResultSet <-
+          searchDocument[DummyData](
+            search(testIndex).query(boolQuery().must(matchQuery("someString", "open search"))),
+          )
+        parsedDocs            = constrainedResultSet.collect { case Right(value) => value }
+        errorDocs             = constrainedResultSet.collect { case Left(value) => value }
 
       } yield assertTrue(
         initialDocumentCountInTestIndex == 0,

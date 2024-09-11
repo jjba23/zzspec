@@ -25,29 +25,30 @@ object MockServerSpec extends ZIOSpecDefault {
       Client.default,
     ) @@ TestAspect.withLiveClock
 
-  def basicMockServerOperations
-    : Spec[Scope with MockServer.Client with MockServerContainer.Container with Client with Scope, Throwable] =
+  def basicMockServerOperations: Spec[
+    Scope with MockServer.Client with MockServerContainer.Container with Client with Scope,
+    Throwable
+  ] =
     test("""
       Doing an HTTP request to the mock server returns the expected result.
-    """) {
+    """.strip) {
       val someResponseBody = "Legolas, son of Thranduil"
       for {
-        mockServerClient <- ZIO.service[MockServer.Client]
+        mockServerClient    <- ZIO.service[MockServer.Client]
         mockServerContainer <- ZIO.service[MockServerContainer.Container]
 
         _ = mockServerClient.value
-          .when(request().withPath("/person").withQueryStringParameter("name", "legolas"))
-          .respond(response().withBody(someResponseBody))
+              .when(request().withPath("/person").withQueryStringParameter("name", "legolas"))
+              .respond(response().withBody(someResponseBody))
 
-        mockServerUrl = new StringBuilder("http://")
-          .append(mockServerContainer.value.getHost)
-          .append(":")
-          .append(mockServerContainer.value.getMappedPort(1080))
-          .toString()
+        mockServerUrl       = new StringBuilder("http://")
+                                .append(mockServerContainer.value.getHost)
+                                .append(":")
+                                .append(mockServerContainer.value.getMappedPort(1080))
+                                .toString()
         parsedMockServerUrl = URL.decode(mockServerUrl).toOption.get
 
-        httpClient <- ZIO.service[Client]
-        res <- httpClient.url(parsedMockServerUrl).get("/person?name=legolas")
+        res     <- ZIO.serviceWithZIO[Client](_.url(parsedMockServerUrl).get("/person?name=legolas"))
         reqBody <- res.body.asString
       } yield assertTrue(reqBody == someResponseBody)
     }

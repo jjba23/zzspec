@@ -14,14 +14,14 @@ object PostgreSQLPool {
     ZLayer.fromZIO {
       for {
         postgresqlContainer <- ZIO.service[PostgreSQLContainer.Container]
-        _ <- ZIO.attemptBlocking(
-          ConnectionPool
-            .singleton(
-              postgresqlContainer.value.getJdbcUrl,
-              postgresqlContainer.value.getUsername,
-              postgresqlContainer.value.getPassword,
-            ),
-        )
+        _                   <- ZIO.attemptBlocking(
+                                 ConnectionPool
+                                   .singleton(
+                                     postgresqlContainer.value.getJdbcUrl,
+                                     postgresqlContainer.value.getUsername,
+                                     postgresqlContainer.value.getPassword,
+                                   ),
+                               )
       } yield PostgreSQLPool()
     }
 }

@@ -1,10 +1,9 @@
 package zzspec.mockserver
 
 import org.testcontainers.containers.output.Slf4jLogConsumer
-import org.testcontainers.containers.{MockServerContainer => MockServerTestContainer, Network}
+import org.testcontainers.containers.{GenericContainer, Network}
 import org.testcontainers.utility.DockerImageName
 import zio._
-import org.testcontainers.containers.GenericContainer
 
 object MockServerContainer {
 
@@ -14,15 +13,16 @@ object MockServerContainer {
     Container,
   ] = ZLayer.scoped {
     for {
-      network <- ZIO.service[Network]
+      network     <- ZIO.service[Network]
       logConsumer <- ZIO.service[Slf4jLogConsumer]
-      mockServer <- scopedTestContainer(logConsumer, network)
-      _ <- ZIO.logInfo(
-        s"[ZZSpec] MockServer started at: http://${mockServer.getHost}:${mockServer.getMappedPort(1080)})"
-      )
+      mockServer  <- scopedTestContainer(logConsumer, network)
+      _           <-
+        ZIO.logInfo(
+          s"[ZZSpec] MockServer started at: http://${mockServer.getHost}:${mockServer.getMappedPort(1080)})"
+        )
     } yield Container(mockServer)
   }
-  private val mockServerVersion = "latest"
+  private val mockServerVersion      = "latest"
   private val image: DockerImageName = DockerImageName
     .parse("docker.io/xdevsoftware/mockserver")
     .withTag(mockServerVersion)

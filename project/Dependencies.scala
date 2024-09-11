@@ -4,7 +4,13 @@ import sbt._
 object Dependencies extends AutoPlugin {
 
   override def buildSettings: Seq[Def.Setting[?]] = Seq(
-    scalaVersion := "2.13.12",
+    scalaVersion := "2.13.14",
+    scalacOptions ++= List(
+      "-Yrangepos",
+      "-Ywarn-unused"
+    ),
+    semanticdbEnabled := true,
+    semanticdbVersion := "4.9.9"
   )
 
   override def trigger = allRequirements

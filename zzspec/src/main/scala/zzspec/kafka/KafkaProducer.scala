@@ -6,8 +6,6 @@ import zio._
 import zio.kafka.producer.{Producer, ProducerSettings}
 import zio.kafka.serde._
 
-import scala.jdk.CollectionConverters._
-
 object KafkaProducer {
 
   def produce[T](
@@ -21,13 +19,13 @@ object KafkaProducer {
   ] = {
     for {
       recordMetadata <- Producer.produce[Any, String, String](
-        topic = topicName,
-        key = key,
-        value = value,
-        keySerializer = Serde.string,
-        valueSerializer = Serde.string,
-      )
-      _ <- ZIO.logInfo(s"[ZZSpec] Published record with key: $key to Kafka, $recordMetadata")
+                          topic = topicName,
+                          key = key,
+                          value = value,
+                          keySerializer = Serde.string,
+                          valueSerializer = Serde.string,
+                        )
+      _              <- ZIO.logInfo(s"[ZZSpec] Published record with key: $key to Kafka, $recordMetadata")
 
     } yield recordMetadata
   }
@@ -36,10 +34,10 @@ object KafkaProducer {
     ZLayer {
       for {
         kafkaContainer <- ZIO.service[KafkaContainer]
-        kafkaServer = s"${kafkaContainer.getHost}:${kafkaContainer.getMappedPort(9092)}"
-        producer <- Producer.make(
-          settings = ProducerSettings(List(kafkaServer)),
-        )
+        kafkaServer     = s"${kafkaContainer.getHost}:${kafkaContainer.getMappedPort(9092)}"
+        producer       <- Producer.make(
+                            settings = ProducerSettings(List(kafkaServer)),
+                          )
       } yield producer
     }
 }

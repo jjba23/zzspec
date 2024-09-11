@@ -1,8 +1,8 @@
 package zzspec.mockserver
 
-import zzspec.mockserver.MockServerContainer._
 import org.mockserver.client.MockServerClient
 import zio.{ZIO, ZLayer}
+import zzspec.mockserver.MockServerContainer._
 
 object MockServer {
 
@@ -10,7 +10,10 @@ object MockServer {
     for {
       mockServerContainer <- ZIO.service[Container]
     } yield Client(
-      new MockServerClient(mockServerContainer.value.getHost, mockServerContainer.value.getMappedPort(1080)),
+      new MockServerClient(
+        mockServerContainer.value.getHost,
+        mockServerContainer.value.getMappedPort(1080)
+      ),
     )
   }
 

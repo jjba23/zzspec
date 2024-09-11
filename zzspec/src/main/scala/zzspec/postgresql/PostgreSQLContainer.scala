@@ -7,7 +7,7 @@ import zio._
 
 object PostgreSQLContainer {
 
-  val defaultSettings: Settings = Settings(
+  val defaultSettings: Settings      = Settings(
     username = "matcher-indexer",
     password = "matcher-indexer",
     databaseName = "matcher-indexer",
@@ -18,13 +18,14 @@ object PostgreSQLContainer {
     Container,
   ] = ZLayer.scoped {
     for {
-      settings <- ZIO.service[Settings]
-      network <- ZIO.service[Network]
+      settings    <- ZIO.service[Settings]
+      network     <- ZIO.service[Network]
       logConsumer <- ZIO.service[Slf4jLogConsumer]
-      postgresql <- scopedTestContainer(settings, logConsumer, network)
-      _ <- ZIO.logInfo(
-        s"[ZZSpec] PostgreSQL started at: http://${postgresql.getHost}:${postgresql.getMappedPort(5432)})"
-      )
+      postgresql  <- scopedTestContainer(settings, logConsumer, network)
+      _           <-
+        ZIO.logInfo(
+          s"[ZZSpec] PostgreSQL started at: http://${postgresql.getHost}:${postgresql.getMappedPort(5432)})"
+        )
     } yield Container(postgresql)
   }
   private val image: DockerImageName =

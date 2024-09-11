@@ -17,7 +17,7 @@ import zzspec.ZZSpec.containerLogger
 
 object PostgreSQLSpec extends ZIOSpecDefault {
 
-  val testTable: CreateTable = CreateTable(
+  val testTable: CreateTable                                       = CreateTable(
     name = UUID.randomUUID().toString,
     columns = Seq(
       DDLColumn(name = "id", dataType = "VARCHAR NOT NULL PRIMARY KEY"),
@@ -46,7 +46,7 @@ object PostgreSQLSpec extends ZIOSpecDefault {
     Verify querying for an int meets expectation.
     Verify querying for a boolean meets expectation.
     Verify fetching and parsing a row meets expectation.
-    """) {
+    """.strip) {
       for {
         _ <- dropTable(testTable.name)
         _ <- createTable(testTable)
@@ -59,18 +59,18 @@ object PostgreSQLSpec extends ZIOSpecDefault {
         """)
 
         totalRowCountInTestTable <- countTable(testTable.name)
-        constrainedRowCount <- countTable(testTable.name, Seq(Where("id", "=", "a")))
-        constrainedRowCount2 <- countTable(testTable.name, Seq(Where("some_int", "=", 1)))
-        constrainedRowCount3 <- countTable(testTable.name, Seq(Where("some_bool", "=", true)))
-        maybeRowOfId2 <- fetchRow(
-          testTable.name,
-          Seq(
-            Column("id", Decoders.string),
-            Column("some_int", Decoders.int),
-            Column("some_bool", Decoders.boolean),
-          ),
-          Seq(Where("id", "=", "b")),
-        )
+        constrainedRowCount      <- countTable(testTable.name, Seq(Where("id", "=", "a")))
+        constrainedRowCount2     <- countTable(testTable.name, Seq(Where("some_int", "=", 1)))
+        constrainedRowCount3     <- countTable(testTable.name, Seq(Where("some_bool", "=", true)))
+        maybeRowOfId2            <- fetchRow(
+                                      testTable.name,
+                                      Seq(
+                                        Column("id", Decoders.string),
+                                        Column("some_int", Decoders.int),
+                                        Column("some_bool", Decoders.boolean),
+                                      ),
+                                      Seq(Where("id", "=", "b")),
+                                    )
       } yield assertTrue(
         initialRowCountInTestTable == 0,
         totalRowCountInTestTable == 2,
@@ -80,8 +80,8 @@ object PostgreSQLSpec extends ZIOSpecDefault {
         maybeRowOfId2.contains(
           Map.from(
             Seq(
-              "id" -> "b",
-              "some_int" -> 2,
+              "id"        -> "b",
+              "some_int"  -> 2,
               "some_bool" -> false,
             ),
           ),

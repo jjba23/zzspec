@@ -6,9 +6,7 @@ ThisBuild / resolvers += "Mulesoft".at(
 
 ThisBuild / testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
 
-Global / concurrentRestrictions += Tags.limit(Tags.Test, 1)
-
-val zzspec = project
+lazy val zzspec = project
   .settings(
     libraryDependencies ++= zzspecDependencies,
     dependencyOverrides ++= zzspecDependencyOverrides,
