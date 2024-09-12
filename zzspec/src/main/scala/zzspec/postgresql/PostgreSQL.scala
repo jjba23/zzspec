@@ -7,6 +7,9 @@ import zzspec.postgresql.PostgreSQL.DQL._
 import java.time.ZonedDateTime
 import java.util.Date
 
+/** PostgreSQL provides useful functions and types to allow you to perform
+  * checks and set an initial state in a PostgreSQL database.
+  */
 object PostgreSQL {
 
   private type DBEff[T] = ZIO[PostgreSQLPool with Scope, Throwable, T]

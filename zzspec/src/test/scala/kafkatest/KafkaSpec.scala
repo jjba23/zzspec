@@ -8,7 +8,8 @@ import zio.kafka.serde.Serde
 import zio.test._
 import zzspec.ZZContract._
 import zzspec.ZZSpec._
-import zzspec.kafka.{KafkaProducer, _}
+import zzspec.kafka.Kafka._
+import zzspec.kafka._
 
 object KafkaSpec extends ZIOSpecDefault {
 
@@ -32,8 +33,8 @@ object KafkaSpec extends ZIOSpecDefault {
     """.strip) {
       for {
         topic <- newTopic
-        _     <- Kafka.createTopic(topic).orDie
-        _     <- Kafka.deleteTopic(topic.name).orDie
+        _     <- createTopic(topic).orDie
+        _     <- deleteTopic(topic.name).orDie
       } yield assertTrue(1 == 1)
     } @@ TestAspect.timeout(8.seconds)
 
@@ -52,9 +53,10 @@ object KafkaSpec extends ZIOSpecDefault {
       for {
         // given
         topic                <- newTopic
-        _                    <- Kafka.createTopic(topic)
-        _                    <- Kafka.produce(topicName = topic.name)(
-                                  key = "1",
+        _                    <- createTopic(topic)
+        someUUID             <- nextRandom
+        _                    <- produce(topicName = topic.name)(
+                                  key = someUUID.toString,
                                   value = SomeMessage(
                                     stringValue = "stringValue",
                                     intValue = 999,
@@ -88,10 +90,10 @@ object KafkaSpec extends ZIOSpecDefault {
         _ <- ZIO.foreach(consumedMessages)(m => ZIO.logInfo(m.toString()))
         _ <- ZIO.logInfo(s"expectedFirstMessage: $expectedFirstMessage")
 
-        expectedLogsArePresent <- checkLogs(Set(_.contains("key = 1")))
+        expectedLogsArePresent <- checkLogs(Set(_.contains(s"key = $someUUID")))
 
         // cleanup
-        _ <- Kafka.deleteTopic(topic.name)
+        _ <- deleteTopic(topic.name)
       } yield assertTrue(
         consumedMessages.length == 1,
         firstMessage == expectedFirstMessage,

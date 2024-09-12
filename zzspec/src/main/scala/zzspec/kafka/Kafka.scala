@@ -3,10 +3,12 @@ package zzspec.kafka
 import org.apache.kafka.clients
 import org.apache.kafka.clients.admin.{Admin => AdminClient, AdminClientConfig}
 import org.apache.kafka.clients.producer.RecordMetadata
+import org.apache.kafka.common.config.TopicConfig
 import org.testcontainers.kafka.KafkaContainer
 import zio._
 import zio.kafka.producer.Producer
 import zio.kafka.serde._
+import zzspec.ZZSpec._
 
 import java.util.Properties
 import scala.jdk.CollectionConverters._
@@ -110,4 +112,16 @@ object Kafka {
     props.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers)
     ZIO.attempt(AdminClient.create(props))
   }
+
+  def newTopic(name: String): NewTopic = NewTopic(
+    name = name,
+    partitions = 1,
+    replicationFactor = 1,
+    configs = Map(
+      TopicConfig.CLEANUP_POLICY_CONFIG -> TopicConfig.CLEANUP_POLICY_COMPACT
+    )
+  )
+
+  def newTopic(): Task[NewTopic] =
+    nextRandom.map(uuid => newTopic(uuid.toString))
 }
