@@ -1,21 +1,14 @@
 package kafkatest
 
-import zzspec.kafka._
-import org.testcontainers.kafka.{KafkaContainer => KafkaTestContainer}
+import io.circe.generic.auto._
+import io.circe.syntax._
 import zio._
-import zio.test._
-import zzspec.kafka.KafkaProducer
-import io.circe.generic.auto._, io.circe.syntax._
-import org.apache.kafka.clients.consumer.ConsumerRecord
-import scala.collection.mutable.Buffer
-import zio.kafka.consumer.Consumer
-import zio.kafka.consumer.Subscription
+import zio.kafka.consumer.{Consumer, Subscription}
 import zio.kafka.serde.Serde
-import zio.kafka.testkit
-import zio.kafka.consumer.ConsumerSettings
-import zio.logging._
-import zzspec.ZZSpec._
+import zio.test._
 import zzspec.ZZContract._
+import zzspec.ZZSpec._
+import zzspec.kafka.{KafkaProducer, _}
 
 object KafkaSpec extends ZIOSpecDefault {
 
@@ -25,12 +18,12 @@ object KafkaSpec extends ZIOSpecDefault {
       publishingAndConsumingKafkaTopicWorks
     )
       .provideShared(
-        containerLogger,
+        containerLogger(),
         networkLayer,
         Scope.default,
-        KafkaContainer.layer,
+        KafkaContainer.layer(),
         KafkaProducer.layer,
-        KafkaConsumer.layer
+        KafkaConsumer.layer()
       )
 
   def basicKafkaTopicOperations =
@@ -60,8 +53,7 @@ object KafkaSpec extends ZIOSpecDefault {
         // given
         topic                <- newTopic
         _                    <- Kafka.createTopic(topic)
-        _                    <- KafkaProducer.produce(
-                                  topicName = topic.name,
+        _                    <- Kafka.produce(topicName = topic.name)(
                                   key = "1",
                                   value = SomeMessage(
                                     stringValue = "stringValue",
@@ -96,9 +88,10 @@ object KafkaSpec extends ZIOSpecDefault {
         _ <- ZIO.foreach(consumedMessages)(m => ZIO.logInfo(m.toString()))
         _ <- ZIO.logInfo(s"expectedFirstMessage: $expectedFirstMessage")
 
-        _ <- Kafka.deleteTopic(topic.name)
-
         expectedLogsArePresent <- checkLogs(Set(_.contains("key = 1")))
+
+        // cleanup
+        _ <- Kafka.deleteTopic(topic.name)
       } yield assertTrue(
         consumedMessages.length == 1,
         firstMessage == expectedFirstMessage,

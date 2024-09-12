@@ -5,10 +5,11 @@ import org.apache.kafka.common.config.TopicConfig
 import org.testcontainers.containers.Network
 import org.testcontainers.containers.output.Slf4jLogConsumer
 import zio._
+import zio.logging.LogFilter
 import zio.logging.slf4j.bridge.Slf4jBridge
 import zio.process.Command
 import zio.test._
-import zzspec.kafka.NewTopic
+import zzspec.kafka.Kafka.NewTopic
 
 import java.io.File
 import java.util.UUID
@@ -19,7 +20,7 @@ object ZZSpec {
     sbtTask: String,
     moduleName: Option[String],
     env: Map[String, String],
-    testLocation: String = "..",
+    testLocation: String = ".."
   )
 
   def runSbtModule(testCase: SbtModuleRun): ZIO[Any, Throwable, Unit] =
@@ -31,10 +32,10 @@ object ZZSpec {
           "sbt",
           testCase.moduleName.fold(testCase.sbtTask)(module =>
             s"$module/${testCase.sbtTask}"
-          ),
+          )
         ).copy(
           env = testCase.env,
-          workingDirectory = Some(new File(testCase.testLocation)),
+          workingDirectory = Some(new File(testCase.testLocation))
         )
 
       _ <- runTaskCmd.inheritIO.exitCode
@@ -42,8 +43,10 @@ object ZZSpec {
 
   val networkLayer: ULayer[Network] = ZLayer.succeed(Network.SHARED)
 
-  val containerLogger: ZLayer[Any, Nothing, Slf4jLogConsumer] =
-    Slf4jBridge.initialize >>> ZLayer.succeed(
+  def containerLogger(
+    level: LogLevel = LogLevel.Warning
+  ): ZLayer[Any, Nothing, Slf4jLogConsumer] =
+    Slf4jBridge.init(LogFilter.logLevel(level)) >>> ZLayer.succeed(
       new Slf4jLogConsumer(org.slf4j.LoggerFactory.getLogger(""))
     )
 
@@ -55,8 +58,8 @@ object ZZSpec {
     partitions = 1,
     replicationFactor = 1,
     configs = Map(
-      TopicConfig.CLEANUP_POLICY_CONFIG -> TopicConfig.CLEANUP_POLICY_COMPACT,
-    ),
+      TopicConfig.CLEANUP_POLICY_CONFIG -> TopicConfig.CLEANUP_POLICY_COMPACT
+    )
   )
 
   def newTopic(): Task[NewTopic] =

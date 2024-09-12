@@ -6,19 +6,14 @@ import io.circe._
 import io.circe.generic.semiauto.deriveCodec
 import io.circe.parser._
 import io.circe.syntax._
+import zio._
+import zio.test._
+import zzspec.ZZSpec.{containerLogger, networkLayer}
 import zzspec.opensearch.Opensearch._
 import zzspec.opensearch.{Opensearch, OpensearchContainer}
-import org.testcontainers.containers.Network
-import org.testcontainers.containers.output.Slf4jLogConsumer
-import zio._
-import zio.logging._
-import zio.logging.slf4j.bridge.Slf4jBridge
-import zio.test._
 
 import java.util.UUID
 import scala.util.Try
-import zzspec.ZZSpec.networkLayer
-import zzspec.ZZSpec.containerLogger
 
 case class DummyData(someString: String)
 
@@ -40,7 +35,7 @@ object OpensearchSpec extends ZIOSpecDefault {
     suite("Opensearch query tests")(basicOpensearchOperations).provideShared(
       Scope.default,
       networkLayer,
-      containerLogger,
+      containerLogger(),
       OpensearchContainer.layer,
       OpensearchContainer.Settings.default,
       Opensearch.layer,

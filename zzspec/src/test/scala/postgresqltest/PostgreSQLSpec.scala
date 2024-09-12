@@ -1,19 +1,14 @@
 package postgresqltest
 
+import zio._
+import zio.test._
+import zzspec.ZZSpec.{containerLogger, networkLayer}
 import zzspec.postgresql.PostgreSQL.DDL.{createTable, dropTable, Column => DDLColumn, CreateTable}
 import zzspec.postgresql.PostgreSQL.DQL._
 import zzspec.postgresql.PostgreSQL._
 import zzspec.postgresql._
-import org.testcontainers.containers.Network
-import org.testcontainers.containers.output.Slf4jLogConsumer
-import zio._
-import zio.logging._
-import zio.logging.slf4j.bridge.Slf4jBridge
-import zio.test._
 
 import java.util.UUID
-import zzspec.ZZSpec.networkLayer
-import zzspec.ZZSpec.containerLogger
 
 object PostgreSQLSpec extends ZIOSpecDefault {
 
@@ -31,7 +26,7 @@ object PostgreSQLSpec extends ZIOSpecDefault {
       .provideShared(
         Scope.default,
         networkLayer,
-        containerLogger,
+        containerLogger(),
         PostgreSQLContainer.Settings.default,
         PostgreSQLContainer.layer,
         PostgreSQLPool.layer,
