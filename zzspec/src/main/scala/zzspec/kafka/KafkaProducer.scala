@@ -10,7 +10,7 @@ import zio.kafka.producer.{Producer, ProducerSettings}
 object KafkaProducer {
 
   val layer: ZLayer[KafkaTestContainer with Scope, Throwable, Producer] =
-    ZLayer(
+    ZLayer.scoped(
       ZIO.serviceWithZIO[KafkaTestContainer](kafkaContainer =>
         Producer.make(
           settings = ProducerSettings(

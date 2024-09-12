@@ -11,7 +11,7 @@ object PostgreSQLPool {
     Throwable,
     PostgreSQLPool,
   ] =
-    ZLayer.fromZIO {
+    ZLayer.scoped {
       for {
         postgresqlContainer <- ZIO.service[PostgreSQLContainer.Container]
         _                   <- ZIO.attemptBlocking(

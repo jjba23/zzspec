@@ -27,7 +27,7 @@ object KafkaConsumer {
     offsetRetrievalStrategy: OffsetRetrieval =
       OffsetRetrieval.Auto(AutoOffsetStrategy.Earliest)
   ): ZLayer[KafkaContainer with Scope, Throwable, Consumer] =
-    ZLayer(
+    ZLayer.scoped(
       ZIO.serviceWithZIO[KafkaTestContainer](kafkaContainer =>
         Consumer.make(
           ConsumerSettings(

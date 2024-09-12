@@ -6,16 +6,16 @@ import zzspec.mockserver.MockServerContainer._
 
 object MockServer {
 
-  val layer: ZLayer[Container, Throwable, Client] = ZLayer {
-    for {
-      mockServerContainer <- ZIO.service[Container]
-    } yield Client(
-      new MockServerClient(
-        mockServerContainer.value.getHost,
-        mockServerContainer.value.getMappedPort(1080)
-      ),
+  val layer: ZLayer[Container, Throwable, Client] = ZLayer.scoped(
+    ZIO.serviceWith[Container](container =>
+      Client(
+        new MockServerClient(
+          container.value.getHost,
+          container.value.getMappedPort(1080)
+        )
+      )
     )
-  }
+  )
 
   case class Client(value: MockServerClient)
 }

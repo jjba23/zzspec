@@ -13,7 +13,7 @@ object Opensearch {
 
   private type SearchEff[T] = ZIO[Scope with Client, Throwable, T]
   val layer: ZLayer[Container, Throwable, Client] =
-    ZLayer {
+    ZLayer.scoped {
       for {
         opensearchContainer <- ZIO.service[Container]
         opensearchUrl        =
