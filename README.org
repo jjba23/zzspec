@@ -1,16 +1,20 @@
 * ZZSpec
 
-#+begin_html
-<div>
-<img src="https://img.shields.io/badge/Scala-2.13.14-red?style=plastic"/>
-<img src="https://img.shields.io/badge/ZIO-2.1.9-red?style=plastic"/>
-</div>
-#+end_html
+[[https://img.shields.io/badge/ZIO-2.1.9-red?style=plastic]]
 
-A Scala library with great ZIO integration to help you easily write high-level integration/black box tests. ZZSpec tests help you grow your confidence in the correctness of software.
+[[https://img.shields.io/badge/Scala-2.13.14-red?style=plastic]]
+
+
+
+A Scala library with great ZIO integration to help you easily write high-level integration/black box tests.
+ZZSpec tests help you grow your confidence in the correctness of software.
 
 * Why ?
-Testing at a high level  means freedom of implementation and refactoring. This is something all engineers love 💘. Read more this page further to understand why this library was created.
+
+Testing at a high level  means freedom of implementation and refactoring.
+This is something all engineers love 💘.
+
+Read this page further to understand why this library was created.
 
 * Usage
 
@@ -25,9 +29,7 @@ See the Kafka spec [[./zzspec/src/test/scala/kafkatest/KafkaSpec.scala][here]].
 See the MockServer spec [[./zzspec/src/test/scala/mockservertest/MockServerSpec.scala][here]].
 
 
-#+begin_html
-<img width="300" height="300" style="border-radius:2em;" src="./resources/zzspec-ai.webp"/>
-#+end_html
+[[./resources/zzspec-ai.webp]]
 
 
 * Status of zzspec
@@ -43,11 +45,13 @@ zzspec is written in a manner to ease higher level testing.
 
 * Unit testing has its place (aided by property based)
 
-Unit testing is an invaluable tool that should also be used in parallel to zzspec and other high level tests. It is very easy to use, useful and gives also good information about a system.
+Unit testing is an invaluable tool that should also be used in parallel to zzspec and other high level tests.
+It is very easy to use, useful and gives also good information about a system.
 
 Ideally, your "core domain" should be fully tested, and your "business logic" should be encoded in more pure code, ideally as data.
 
-When relevant, you should leverage great property based testing tools and data generators, such as provided by ZIO test, to ensure all edge cases are caught in tests.
+When relevant, you should leverage great property based testing tools and data generators.
+E.g.  ZIO test, to ensure all edge cases are caught in tests.
 
 
 * Dealing with dependencies
@@ -63,22 +67,29 @@ When we start using external dependencies in a system like databases, caches, ex
 
 Mocks are generally painful to write, read, debug and maintain.
 
-They should be avoided when possible, we should use real implementations for most tests to a system. testcontainers is a great library for this purpose, and we use it extensively.
+They should be avoided when possible, we should use real implementations for most tests to a system.
+testcontainers is a great library for this purpose, and we use it extensively.
 
-Often mocks are used for lack of better tooling, or simply due to habit (specially if you have Java experience). Lots of developers coming from a traditional enterprisy JDK environment know what we mean. This tendency of doing one class per file, and creating tests for every single class and every single method along with extensive Mockito ideology.
+Often mocks are used for lack of better tooling, or simply due to habit (specially if you have Java experience).
+Lots of developers coming from a traditional enterprisy JDK environment know what we mean.
+
+This tendency of doing one class per file, and creating tests for every single class and every single method along with extensive Mockito ideology.
 
 
 * The cure
 
-No marrying the test structure to code structure. No testing every individual class when not needed. Ensure we test functionalities, almost never test how the code is written / implemented (this gives flexibility and *freedom to refactor*).
+No marrying the test structure to code structure. No testing every individual class when not needed.
+Ensure we test functionalities, almost never test how the code is written / implemented (this gives flexibility and *freedom to refactor*).
 
-Attempt to test all “user paths” and possible interactions with the system, good and bad, low load high load, etc. Many unit tests where it makes sense. Preferably auto-generated test cases, with a set of inputs.
+Attempt to test all “user paths” and possible interactions with the system, good and bad, low load high load, etc.
+Write many unit tests and property based tests where it makes sense. Preferably auto-generated test cases, with a set of inputs.
 
 * Pros ?
 
 Easier and simpler tests of the entire system, tests have lower complexity. Easy to cover 100% of a “user flow” or a “data flow”.
 
-Low chance of false positives (partly thanks to avoiding mocks too). This allows for a good test-driven development approach, and more confidence in product.
+Low chance of false positives (partly thanks to avoiding mocks too).
+This allows for a good test-driven development approach, and more confidence in product.
 
 Testers require less technical knowledge, programming or IT skills and do not need to learn all nitty gritty implementation details of the system.
 
@@ -88,10 +99,15 @@ More loose coupling from the code means more freedom of implementation + refacto
 
 * Project management - Backlog
 
-** Allow "initial state" in PostgreSQL and in Opensearch more easily
-
-** Developing benchmarking capabilities (HTTP, Kafka, IO, DB) since we test from outside should be easier
+** Developing benchmarking capabilities (HTTP, Kafka, IO, Elastic, PostgreSQL)
 
 ** Use more of ZIO test and its data generators
 
+** Ensure the PostgreSQL DSL is more type safe
+
+** Auto-generate and publish Scaladoc (with CI)
+
+** Auto-tag and publish artifacts to Maven (with CI)
+
+** Allow "initial state" in PostgreSQL and in Opensearch more easily
 
