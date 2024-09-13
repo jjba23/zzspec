@@ -1,3 +1,6 @@
+import xerial.sbt.Sonatype._
+import xerial.sbt.Sonatype.sonatypeCentralHost
+
 name := "zzspec"
 
 ThisBuild / resolvers += "Mulesoft".at(
@@ -45,8 +48,10 @@ ThisBuild / homepage := Some(url("https://github.com/jjba23/zzspec"))
 
 ThisBuild / versionScheme := Some("early-semver")
 
-import xerial.sbt.Sonatype._
 sonatypeProjectHosting := Some(GitHubHosting("jjba23", "zzspec", "jjbigorra@gmail.com"))
 
-// publish to the sonatype repository
-publishTo := sonatypePublishToBundle.value
+ThisBuild / sonatypeCredentialHost := sonatypeCentralHost
+
+publishTo.in(ThisBuild) := sonatypePublishToBundle.value
+
+publishMavenStyle := true
