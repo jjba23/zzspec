@@ -1,10 +1,11 @@
 * ZZSpec
 
-[[https://img.shields.io/badge/ZIO-2.1.9-red?style=plastic]]
-
-[[https://img.shields.io/badge/Scala-2.13.14-red?style=plastic]]
-
-
+#+begin_html
+<div>
+<img src="https://img.shields.io/badge/Scala-2.13.14-red?style=plastic"/>
+<img src="https://img.shields.io/badge/ZIO-2.1.9-red?style=plastic"/>
+</div>
+#+end_html
 
 A Scala library with great ZIO integration to help you easily write high-level integration/black box tests.
 ZZSpec tests help you grow your confidence in the correctness of software.
@@ -29,7 +30,9 @@ See the Kafka spec [[./zzspec/src/test/scala/kafkatest/KafkaSpec.scala][here]].
 See the MockServer spec [[./zzspec/src/test/scala/mockservertest/MockServerSpec.scala][here]].
 
 
-[[./resources/zzspec-ai.webp]]
+#+begin_html
+<img src="./resources/zzspec-ai.webp"/>
+#+end_html
 
 
 * Status of zzspec
