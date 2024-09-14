@@ -1,4 +1,4 @@
-ThisBuild / version := "0.7.4"
+ThisBuild / version := "0.7.5"
 
 name := "zzspec"
 
@@ -15,8 +15,8 @@ ThisBuild / developers := List(Developer(id = "jjba23", name = "Josep Bigorra", 
 ThisBuild / githubOwner := "jjba23"
 ThisBuild / githubRepository := "zzspec"
 
-ThisBuild / publishConfiguration := publishConfiguration.value.withOverwrite(true)
-ThisBuild / publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true)
+publishConfiguration := publishConfiguration.value.withOverwrite(true)
+publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true)
 
 lazy val zzspec = project
   .settings(
