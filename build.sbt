@@ -1,4 +1,4 @@
-ThisBuild / version := "0.7.9"
+ThisBuild / version := "0.7.10"
 
 name := "zzspec"
 
@@ -24,3 +24,8 @@ lazy val zzspec = project
     libraryDependencies ++= zzspecDependencies,
     dependencyOverrides ++= zzspecDependencyOverrides,
   )
+
+enablePlugins(GhpagesPlugin)
+enablePlugins(SiteScaladocPlugin)
+
+git.remoteRepo := "git@github.com:jjba23/zzspec.git"
