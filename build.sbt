@@ -1,5 +1,5 @@
 name := "zzspec"
-ThisBuild / baseVersion := "0.6"
+ThisBuild / baseVersion := "0.7"
 
 ThisBuild / resolvers += "Mulesoft".at(
   "https://repository.mulesoft.org/nexus/content/repositories/public/"
