@@ -28,26 +28,34 @@ lazy val zzspec = project
     dependencyOverrides ++= zzspecDependencyOverrides,
   )
 
-enablePlugins(GhpagesPlugin)
-enablePlugins(SiteScaladocPlugin)
+// enablePlugins(GhpagesPlugin)
+// enablePlugins(SiteScaladocPlugin)
 
-git.remoteRepo := "git@github.com:jjba23/zzspec.git"
+// git.remoteRepo := "git@personal.github.com:jjba23/zzspec.git"
+// git.remoteRepo := "git@github.com:jjba23/zzspec.git"
 
-def pushSiteTask =
-  Def.task {
-    val git  = GitKeys.gitRunner.value
-    val repo = ghpagesSynchLocal.value
-    val s    = streams.value.log
-    git("add", ".")(repo, s)
-    try {
-      // git("id", "personal")(repo, s)
-      val commit = "commit" +: ghpagesCommitOptions.value
-      git(commit: _*)(repo, s)
-    } catch {
-      case NonFatal(e) =>
-        s.info(e.toString)
-    }
-    git.push(repo, s)
-  }
+// def pushSiteTask =
+//   Def.task {
+//     val git  = GitKeys.gitRunner.value
+//     val repo = ghpagesSynchLocal.value
+//     val s    = streams.value.log
+//     git("add", ".")(repo, s)
+//     try {
+//       git("id", "personal")(repo, s)
+//       val commit = "commit" +: ghpagesCommitOptions.value
+//       git(commit: _*)(repo, s)
+//     } catch {
+//       case NonFatal(e) =>
+//         s.info(e.toString)
+//     }
+//     git.push(repo, s)
+//   }
 
-ghpagesPushSite := pushSiteTask.value
+// ghpagesPushSite := pushSiteTask.value
+// val ZZSpec = config("zzspec")
+
+// lazy val siteWithScaladoc = project
+//   .in(file("site/scaladoc"))
+//   .settings(
+//     SiteScaladocPlugin.scaladocSettings(ZZSpec, zzspec / Compile / packageDoc / mappings, "api/zzspec")
+//   )
