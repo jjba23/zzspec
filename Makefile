@@ -1,6 +1,7 @@
 clean:
 	rm -rf .bloop .metals project/target project/project target zzspec/target
+	GITHUB_TOKEN="" sbt "bloopInstall"
 validate:
-	sbt "scalafixAll; scalafmt; test"
+	GITHUB_TOKEN=""	sbt "scalafixAll; scalafmt; test"
 test:
-	sbt "test"
+	GITHUB_TOKEN=""	sbt "test"

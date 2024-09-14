@@ -1,17 +1,10 @@
+ThisBuild / version := "0.7.4"
+
 name := "zzspec"
-ThisBuild / version := "0.7.3"
 
 ThisBuild / resolvers += "Mulesoft".at(
   "https://repository.mulesoft.org/nexus/content/repositories/public/"
 )
-
-ThisBuild / testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
-
-lazy val zzspec = project
-  .settings(
-    libraryDependencies ++= zzspecDependencies,
-    dependencyOverrides ++= zzspecDependencyOverrides,
-  )
 
 ThisBuild / organizationHomepage := Some(url("https://github.com/jjba23/zzspec"))
 
@@ -21,3 +14,12 @@ ThisBuild / developers := List(Developer(id = "jjba23", name = "Josep Bigorra", 
 
 ThisBuild / githubOwner := "jjba23"
 ThisBuild / githubRepository := "zzspec"
+
+ThisBuild / publishConfiguration := publishConfiguration.value.withOverwrite(true)
+ThisBuild / publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true)
+
+lazy val zzspec = project
+  .settings(
+    libraryDependencies ++= zzspecDependencies,
+    dependencyOverrides ++= zzspecDependencyOverrides,
+  )
