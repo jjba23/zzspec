@@ -18,9 +18,7 @@ jobs:
           cache: sbt
       - name: tests
         run: sbt +test          
-      - run: sbt ci-release
+      - name: publish
+        run: sbt publish
         env:
-          PGP_SECRET: ${{ secrets.PGP_SECRET }}
-          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-          PGP_PASSPHRASE: 
+          GITHUB_TOKEN: ${{ secrets.ZZSPEC_PUBLISH_TOKEN }}

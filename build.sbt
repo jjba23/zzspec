@@ -1,4 +1,5 @@
-ThisBuild / name := "zzspec"
+name := "zzspec"
+ThisBuild / baseVersion := "0.6"
 
 ThisBuild / resolvers += "Mulesoft".at(
   "https://repository.mulesoft.org/nexus/content/repositories/public/"
@@ -14,33 +15,11 @@ lazy val zzspec = project
 
 ThisBuild / organizationHomepage := Some(url("https://github.com/jjba23/zzspec"))
 
-ThisBuild / scmInfo := Some(
-  ScmInfo(
-    url("https://github.com/jjba23/zzspec"),
-    "scm:git@github.com:jjba23/zzspec.git"
-  )
-)
+ThisBuild / versionScheme := Some("semver-spec")
 
-ThisBuild / versionScheme := Some("early-semver")
+ThisBuild / developers := List(Developer(id = "jjba23", name = "Josep Bigorra", email = "jjbigorra@gmail.com", url = url("https://github.com/jjba23")))
 
-ThisBuild / sonatypeCredentialHost := "s01.oss.sonatype.org"
-ThisBuild / sonatypeRepository := "https://s01.oss.sonatype.org/service/local"
+ThisBuild / githubOwner := "jjba23"
+ThisBuild / githubRepository := "zzspec"
 
-inThisBuild(
-  List(
-    organization := "zzspec",
-    homepage := Some(url("https://github.com/jjba23/zzspec")),
-    licenses := List(
-      "GNU GPL v3" -> new URL("https://www.gnu.org/licenses/gpl-3.0.en.html")
-    ),
-    developers :=
-      List(
-        Developer(
-          id = "jjba23",
-          name = "Josep Bigorra",
-          email = "jjbigorra@gmail.com",
-          url = url("https://jointhefreeworld.org")
-        )
-      )
-  )
-)
+ThisBuild / publishMavenStyle := true
