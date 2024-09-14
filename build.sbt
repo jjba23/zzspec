@@ -1,7 +1,7 @@
 import scala.util.control.NonFatal
 import com.github.sbt.git.SbtGit.GitKeys
 
-ThisBuild / version := "0.7.10"
+ThisBuild / version := "0.7.11"
 
 name := "zzspec"
 
@@ -40,7 +40,7 @@ def pushSiteTask =
     val s    = streams.value.log
     git("add", ".")(repo, s)
     try {
-      git("id", "personal")(repo, s)
+      // git("id", "personal")(repo, s)
       val commit = "commit" +: ghpagesCommitOptions.value
       git(commit: _*)(repo, s)
     } catch {
