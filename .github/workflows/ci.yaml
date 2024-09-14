@@ -1,11 +1,15 @@
-name: CI run
+name: CI
+
 on:
   push:
     branches: ["trunk"]
     tags: ["*"]
- 
+
+env:
+  GITHUB_TOKEN: ${{ secrets.ZZSPEC_PUBLISH_TOKEN }}
+          
 jobs:
-  publish:
+  ci:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,5 +25,4 @@ jobs:
       - name: publish
         if: startsWith(github.ref, 'refs/tags/v')
         run: sbt publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.ZZSPEC_PUBLISH_TOKEN }}
+
