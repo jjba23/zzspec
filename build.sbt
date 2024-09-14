@@ -1,4 +1,4 @@
-ThisBuild / version := "0.7.5"
+ThisBuild / version := "0.7.8"
 
 name := "zzspec"
 
@@ -17,6 +17,7 @@ ThisBuild / githubRepository := "zzspec"
 
 publishConfiguration := publishConfiguration.value.withOverwrite(true)
 publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true)
+Compile / pushRemoteCacheConfiguration := null
 
 lazy val zzspec = project
   .settings(
