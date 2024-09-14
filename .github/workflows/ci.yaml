@@ -19,6 +19,7 @@ jobs:
       - name: tests
         run: sbt +test          
       - name: publish
+        if: startsWith(github.ref, 'refs/tags/v')
         run: sbt publish
         env:
           GITHUB_TOKEN: ${{ secrets.ZZSPEC_PUBLISH_TOKEN }}

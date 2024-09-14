@@ -21,5 +21,3 @@ ThisBuild / developers := List(Developer(id = "jjba23", name = "Josep Bigorra", 
 
 ThisBuild / githubOwner := "jjba23"
 ThisBuild / githubRepository := "zzspec"
-
-ThisBuild / publishMavenStyle := true
