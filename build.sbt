@@ -1,3 +1,6 @@
+import scala.util.control.NonFatal
+import com.github.sbt.git.SbtGit.GitKeys
+
 ThisBuild / version := "0.7.10"
 
 name := "zzspec"
@@ -29,3 +32,22 @@ enablePlugins(GhpagesPlugin)
 enablePlugins(SiteScaladocPlugin)
 
 git.remoteRepo := "git@github.com:jjba23/zzspec.git"
+
+def pushSiteTask =
+  Def.task {
+    val git  = GitKeys.gitRunner.value
+    val repo = ghpagesSynchLocal.value
+    val s    = streams.value.log
+    git("add", ".")(repo, s)
+    try {
+      git("id", "personal")(repo, s)
+      val commit = "commit" +: ghpagesCommitOptions.value
+      git(commit: _*)(repo, s)
+    } catch {
+      case NonFatal(e) =>
+        s.info(e.toString)
+    }
+    git.push(repo, s)
+  }
+
+ghpagesPushSite := pushSiteTask.value
