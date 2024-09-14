@@ -3,6 +3,11 @@ on:
   push:
     branches: ["trunk"]
     tags: ["*"]
+  workflow_run:
+    workflows: ["CI run"]
+    branches: ["trunk"]
+    types: 
+      - completed    
 jobs:
   publish:
     runs-on: ubuntu-latest
