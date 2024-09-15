@@ -8,55 +8,69 @@
 #+end_html
 
 A Scala library with great ZIO integration to help you easily write high-level integration/black box tests.
-*Why ?* Testing at a high level  means freedom of implementation and refactoring. This is something all engineers love 💘.
+~zzspec~ helps you grow your confidence in the correctness of software with ZIO (test).
 
-A big focus is put in concurrent testing, pragmatism, and in allowing developers to focus on the actual test flow at a high level, abstracting away certain details (always with an escape hatch).
-ZZSpec tests help you grow your confidence in the correctness of software with ZIO (test).
+*Why ?*
 
+Testing at a high level  means freedom of implementation and refactoring, this is something all engineers love.
+Also, we love functional programming, Scala and ZIO ❤️.
 
-** Getting started
-
-To get started using ZZSpec, a good place to look is the integration tests of ZZSpec itself.
-
-See the PostgreSQL spec [[./zzspec/src/test/scala/postgresqltest/PostgreSQLSpec.scala][here]].
-
-See the OpenSearch spec [[./zzspec/src/test/scala/opensearchtest/OpensearchSpec.scala][here]].
-
-See the Kafka spec [[./zzspec/src/test/scala/kafkatest/KafkaSpec.scala][here]].
-
-See the MockServer spec [[./zzspec/src/test/scala/mockservertest/MockServerSpec.scala][here]].
+/Tests should be the compass to study and prove the correctness of the behaviour of a system/.
 
 
 #+begin_html
 <img src="./resources/zzspec-ai.webp"/>
 #+end_html
 
+** Vision
+
+~zzspec~ considers the following to be *essential for good testing*:
+- allow engineers to focus on the actual test flow at a high level of reasoning, with an expressive language (DSL), abstracting away certain details (always with an escape hatch).
+- concurrent testing should work and be the default (with random order of text execution to prove correctness)
+- speed of test execution, having ZIO test really helps us by leveraging layers (per suite, per test etc.)
+- tests should be first class citizens of your endeavours, and a good way to teach more details about the system to others
+- up to date dependencies (e.g. docker container versions, 3rd party code)
+- pragmatism as starting point and on a case by case basis, decide what kind of tests do enough coverage of the system and control flow. traditional code coverage metrics are not always applicable.
+- contract-driven testing is a great way to ensure data schemas and values remain consistent, when testing with external systems for example. ~zzspec~ can help and has functionalities for this.
+- mocks are most of the time not the right tool to test our systems and logic
+- no marrying the test structure to code structure. No testing every individual class when not needed.
+- ensure we test functionalities, almost never test how the code is written / implemented (this gives flexibility and *freedom to refactor*).
+- attempt to test all “user paths” and possible interactions with the system, good and bad, low load high load, etc.
+- write many unit tests and property based tests where it makes sense. Preferably auto-generated test cases, with a set of inputs.
+  
+
+** Getting started
+
+To get started using ~zzspec~, a good place to look is the integration tests of ~zzspec~ itself.
+
+See the PostgreSQL spec [[./zzspec/src/test/scala/postgresqltest/PostgreSQLSpec.scala][PostgreSQL spec here]]. 
+
+See the OpenSearch spec [[./zzspec/src/test/scala/opensearchtest/OpensearchSpec.scala][OpenSearch spec here]].
+
+See the Kafka spec [[./zzspec/src/test/scala/kafkatest/KafkaSpec.scala][Kafka spec here]].
+
+See the MockServer spec [[./zzspec/src/test/scala/mockservertest/MockServerSpec.scala][MockServer here]].
+
 
 ** Installing
 
 You can install ~zzspec~ just like any other Maven/Nexus package, by adding it as dependency to your project:
 #+begin_src scala
-  libraryDependencies += ("zzspec" %% "zzspec" % "0.7.8") // or newer
+  libraryDependencies += ("zzspec" %% "zzspec" % "0.7.16") // or newer
 #+end_src
 
 ZZSpec will also pull some libraries with it, including ZIO, Circe and testcontainers.
-
 Checkout the artifacts, which are hosted right here, on GitHub : https://github.com/jjba23/zzspec/packages/2255278 .
 
 ** Status of zzspec
 
-Currently, this codebase is in a *semi-stable* state. I developed it as a tool to aid myself when refactoring, and simultaneously improving drastically the test quality and coverage of a service at work.
-
-*ZZSpec is good at BDD* : This stimulates good, functional and behaviour driven testing.
-
-Testing a system becomes simpler and we can cover many more "real" edge cases.
-
-ZZSpec is written in a manner to ease higher level testing.
+Currently, this codebase and API is in a *semi-stable* state, with no major backward-compatible changes planned.
+~zzspec~  will start to use semantic versioning and commit to a stable API starting at v1.0.0 (WIP).
 
 
 ** Unit testing has its place (aided by property based)
 
-Unit testing is an invaluable tool that should also be used in parallel to zzspec and other high level tests.
+Unit testing is an invaluable tool that should also be used in parallel to ~zzspec~ and other high level tests.
 It is very easy to use, useful and gives also good information about a system.
 
 Ideally, your "core domain" should be fully tested, and your "business logic" should be encoded in more pure code, ideally as data.
@@ -84,17 +98,13 @@ Lots of developers coming from a traditional enterprisy JDK environment know wha
 This tendency of doing one class per file, and creating tests for every single class and every single method along with extensive Mockito ideology.
 
 
-** The cure
+** What's in it for me ?
 
-No marrying the test structure to code structure. No testing every individual class when not needed.
-Ensure we test functionalities, almost never test how the code is written / implemented (this gives flexibility and *freedom to refactor*).
+Easier and simpler tests of the entire system, tests have lower complexity.
 
-Attempt to test all “user paths” and possible interactions with the system, good and bad, low load high load, etc.
-Write many unit tests and property based tests where it makes sense. Preferably auto-generated test cases, with a set of inputs.
+Testing a system becomes simpler and we can cover many more "real" edge cases.
 
-** Pros ?
-
-Easier and simpler tests of the entire system, tests have lower complexity. Easy to cover 100% of a “user flow” or a “data flow”.
+Easy to cover 100% of a “user flow” or a “data flow”.
 
 Low chance of false positives (partly thanks to avoiding mocks too).
 This allows for a good test-driven development approach, and more confidence in product.
@@ -122,6 +132,6 @@ More loose coupling from the code means more freedom of implementation + refacto
 ** Allow "initial state" in PostgreSQL and in Opensearch more easily
 
 
-** Work done
-*** DONE Auto-tag and publish artifacts to Maven (with CI)
+* Work done
+** DONE Auto-tag and publish artifacts to Maven (with CI)
 CLOSED: [2024-09-14 za 14:05]
