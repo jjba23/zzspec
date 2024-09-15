@@ -19,7 +19,10 @@ Also, we love functional programming, Scala and ZIO ❤️.
 
 
 #+begin_html
+<figure>
 <img src="./resources/zzspec-ai.webp"/>
+<figcaption>zzspec's logo and banner is courtesy of ChatGPT</figcaption>
+</figure>
 #+end_html
 
 ** Vision
