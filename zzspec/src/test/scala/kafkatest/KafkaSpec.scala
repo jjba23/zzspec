@@ -16,7 +16,8 @@ object KafkaSpec extends ZIOSpecDefault {
   def spec: Spec[Environment with TestEnvironment with Scope, Any] =
     suite("Kafka tests")(
       basicKafkaTopicOperations,
-      publishingAndConsumingKafkaTopicWorks
+      publishingAndConsumingKafkaTopicWorks,
+      publishingAndConsuming6KafkaTopicWorks
     )
       .provideShared(
         containerLogger(),
@@ -98,6 +99,60 @@ object KafkaSpec extends ZIOSpecDefault {
         consumedMessages.length == 1,
         firstMessage == expectedFirstMessage,
         expectedLogsArePresent
+      )
+    } @@
+    TestAspect.withLiveClock @@
+    TestAspect.timeout(8.seconds)
+  }
+
+  def publishingAndConsuming6KafkaTopicWorks = {
+    val testCaseName = """
+      Publishing and consuming 6 simple messages to a Kafka topic works as expected
+    """.strip
+
+    test(testCaseName) {
+      for {
+        // given
+        topic            <- newTopic
+        _                <- createTopic(topic)
+        _                <- ZIO.foreach(1 to 100)(i => {
+                              for {
+                                someUUID <- nextRandom
+                                _        <- produce(topicName = topic.name)(
+                                              key = someUUID.toString,
+                                              value = SomeMessage(
+                                                stringValue = i.toString,
+                                                intValue = i,
+                                                stringListValue = Seq("a", "b", "c")
+                                              ).asJson.toString()
+                                            )
+                              } yield ()
+                            })
+
+        // when
+        consumedMessages <-
+          ZIO.serviceWithZIO[Consumer](
+            _.plainStream(
+              Subscription.Topics(Set(topic.name)),
+              Serde.string,
+              Serde.string
+            )
+              .take(6)
+              .runCollect
+          )
+
+        // then
+        parsedMessages   <-
+          ZIO.foreach(
+            consumedMessages.map(r => (r.record.key, r.record.value)).map(_._2)
+          )(parseJson)
+        consumedInts      = parsedMessages.map(rec => rec.get("intValue").asInt())
+
+        // cleanup
+        _ <- deleteTopic(topic.name)
+      } yield assertTrue(
+        consumedMessages.length == 6,
+        consumedInts.toList == (1 to 6).toList
       )
     } @@
     TestAspect.withLiveClock @@

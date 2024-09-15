@@ -1,7 +1,7 @@
 import scala.util.control.NonFatal
 import com.github.sbt.git.SbtGit.GitKeys
 
-ThisBuild / version := "0.7.12"
+ThisBuild / version := "0.7.15"
 
 name := "zzspec"
 
@@ -22,11 +22,13 @@ publishConfiguration := publishConfiguration.value.withOverwrite(true)
 publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true)
 Compile / pushRemoteCacheConfiguration := null
 
-lazy val zzspec = project
+val zzspec = project
   .settings(
     libraryDependencies ++= zzspecDependencies,
     dependencyOverrides ++= zzspecDependencyOverrides,
   )
+
+githubTokenSource := TokenSource.Environment("GITHUB_TOKEN")
 
 // enablePlugins(GhpagesPlugin)
 // enablePlugins(SiteScaladocPlugin)

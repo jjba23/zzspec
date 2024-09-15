@@ -8,9 +8,9 @@ import zio._
 object PostgreSQLContainer {
 
   val defaultSettings: Settings      = Settings(
-    username = "matcher-indexer",
-    password = "matcher-indexer",
-    databaseName = "matcher-indexer",
+    username = "zzspec",
+    password = "zzspec",
+    databaseName = "zzspec",
   )
   val layer: ZLayer[
     Settings with Network with Slf4jLogConsumer,

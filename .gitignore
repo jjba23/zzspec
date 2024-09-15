@@ -25,13 +25,6 @@ dist
 out
 my-assets
 *.stackdump
-
-# Ignore local application.conf changes
-/conf/application.local-*.conf
-/conf/generated.keystore
-
-# Non-default (copied from zd-insurer)
-telepresence-zd-matcher
 metals.sbt
 helm/**/charts/*.tgz
 .vscode
@@ -40,6 +33,5 @@ helm/**/charts/*.tgz
 Main.run.xml
 .metals
 .bloop
-
 .terraform/
 *.tfstate

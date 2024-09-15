@@ -3,5 +3,7 @@ clean:
 	GITHUB_TOKEN="" sbt "bloopInstall"
 validate:
 	GITHUB_TOKEN=""	sbt "scalafixAll; scalafmt; test"
+fmt:
+	GITHUB_TOKEN=""	sbt "scalafixAll; scalafmt"
 test:
 	GITHUB_TOKEN=""	sbt "test"

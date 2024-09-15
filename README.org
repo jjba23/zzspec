@@ -8,24 +8,13 @@
 #+end_html
 
 A Scala library with great ZIO integration to help you easily write high-level integration/black box tests.
-ZZSpec tests help you grow your confidence in the correctness of software.
+*Why ?* Testing at a high level  means freedom of implementation and refactoring. This is something all engineers love 💘.
 
-**Why ?** Testing at a high level  means freedom of implementation and refactoring.
+A big focus is put in concurrent testing, pragmatism, and in allowing developers to focus on the actual test flow at a high level, abstracting away certain details (always with an escape hatch).
+ZZSpec tests help you grow your confidence in the correctness of software with ZIO (test).
 
-This is something all engineers love 💘.
 
-** Installing
-
-You can install ~zzspec~ just like any other Maven/Nexus package, by adding it as dependency to your project:
-#+begin_src scala
-  libraryDependencies += ("zzspec" %% "zzspec" % "0.7.8") // or newer
-#+end_src
-
-ZZSpec will also pull some libraries with it, including ZIO, Circe and testcontainers.
-
-Checkout the artifacts, which are hosted right here, on GitHub : https://github.com/jjba23/zzspec/packages/2255278 .
-
-*** Getting started
+** Getting started
 
 To get started using ZZSpec, a good place to look is the integration tests of ZZSpec itself.
 
@@ -42,6 +31,17 @@ See the MockServer spec [[./zzspec/src/test/scala/mockservertest/MockServerSpec.
 <img src="./resources/zzspec-ai.webp"/>
 #+end_html
 
+
+** Installing
+
+You can install ~zzspec~ just like any other Maven/Nexus package, by adding it as dependency to your project:
+#+begin_src scala
+  libraryDependencies += ("zzspec" %% "zzspec" % "0.7.8") // or newer
+#+end_src
+
+ZZSpec will also pull some libraries with it, including ZIO, Circe and testcontainers.
+
+Checkout the artifacts, which are hosted right here, on GitHub : https://github.com/jjba23/zzspec/packages/2255278 .
 
 ** Status of zzspec
 

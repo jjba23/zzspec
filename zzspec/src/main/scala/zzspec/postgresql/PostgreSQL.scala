@@ -14,12 +14,23 @@ object PostgreSQL {
 
   private type DBEff[T] = ZIO[PostgreSQLPool with Scope, Throwable, T]
 
+  /** Directly perform an update operation on the PostgreSQL database with a raw
+    * SQL statement which will be automatically wrapped in a transaction.
+    *
+    * @param sql
+    * @return
+    */
   def updateRaw(sql: String): DBEff[Int] = ZIO.attemptBlocking {
     DB.localTx { implicit session =>
       SQL(sql).update()
     }
   }
 
+  /** Directly execute a raw SQL statement on the PostgreSQL database.
+    *
+    * @param sql
+    * @return
+    */
   def executeRaw(sql: String): DBEff[Boolean] = ZIO.attemptBlocking {
     DB.autoCommit { implicit session =>
       SQL(sql).execute()
@@ -33,12 +44,12 @@ object PostgreSQL {
     ZIO.attemptBlocking {
       val where = makeWhereConstraints(constraints)
       val stmt  = s"""
-      SELECT COUNT(1) as bb_count FROM "$tableName" WHERE $where;
+      SELECT COUNT(1) as zz_count FROM "$tableName" WHERE $where;
     """
 
       val count = DB.readOnly { implicit session =>
         SQL(stmt)
-          .map(_.long("bb_count"))
+          .map(_.long("zz_count"))
           .single()
       }
 
