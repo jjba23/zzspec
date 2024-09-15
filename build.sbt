@@ -1,7 +1,7 @@
 import scala.util.control.NonFatal
 import com.github.sbt.git.SbtGit.GitKeys
 
-ThisBuild / version := "0.7.15"
+ThisBuild / version := "0.7.16"
 
 name := "zzspec"
 

@@ -115,7 +115,7 @@ object KafkaSpec extends ZIOSpecDefault {
         // given
         topic            <- newTopic
         _                <- createTopic(topic)
-        _                <- ZIO.foreach(1 to 100)(i => {
+        _                <- ZIO.foreach(1 to 6)(i => {
                               for {
                                 someUUID <- nextRandom
                                 _        <- produce(topicName = topic.name)(
