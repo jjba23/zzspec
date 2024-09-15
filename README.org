@@ -117,24 +117,41 @@ Testers require less technical knowledge, programming or IT skills and do not ne
 More loose coupling from the code means more freedom of implementation + refactor
 
 
+* Contributing
+
+Please feel free to open a pull request, GitHub issue or reach out to me personally (Joe - jjbigorra@gmail.com).
+
+By contributing, your work will be protected under the GNU Lesser General Public License v3.0.
+
 
 * Project management - Backlog
 
 ** Developing benchmarking capabilities (HTTP, Kafka, IO, Elastic, PostgreSQL)
 
-** Use more of ZIO test and its data generators
+** Use more capabilities of ZIO test and its data generators
 
-** Make container layers more customizable
+** Make container layers more customizable and configurable
 
 ** Add Kafka Schema Registry container and Protobuf testing facilities
-
-** Ensure the PostgreSQL DSL is more type safe
 
 ** Auto-generate and publish Scaladoc and documentation in Github Pages (with CI)
 
 ** Allow "initial state" in PostgreSQL and in Opensearch more easily
 
+** Ensure the PostgreSQL DSL is more type safe
+
+** Consider adding Slick instead of Scalikejdbc and also supporting SQLite databases
+
+** Considering not using Jackson to work with JSON 
+
 
 * Work done
+
+** DONE Finalize initial phase Kafka testing
+CLOSED: [2024-09-16 ma 00:06]
+
+** DONE Add vision statement and improve README 
+CLOSED: [2024-09-16 ma 00:07]
+
 ** DONE Auto-tag and publish artifacts to Maven (with CI)
 CLOSED: [2024-09-14 za 14:05]
