@@ -3,24 +3,32 @@ package postgresqltest
 import zio._
 import zio.test._
 import zzspec.ZZSpec.{containerLogger, networkLayer}
-import zzspec.postgresql.PostgreSQL.DDL.{createTable, dropTable, Column => DDLColumn, CreateTable}
-import zzspec.postgresql.PostgreSQL.DQL._
-import zzspec.postgresql.PostgreSQL._
+import zzspec.slick.SlickPostgres._
 import zzspec.postgresql._
-
+import slick.jdbc.PostgresProfile.api._
 import java.util.UUID
+import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContextExecutor
 
 object PostgreSQLSpec extends ZIOSpecDefault {
 
-  val testTable: CreateTable                                       =
-    CreateTable(
-      name = UUID.randomUUID().toString,
-      columns = Seq(
-        DDLColumn(name = "id", dataType = "VARCHAR NOT NULL PRIMARY KEY"),
-        DDLColumn(name = "some_int", dataType = "INT NOT NULL"),
-        DDLColumn(name = "some_bool", dataType = "BOOLEAN NOT NULL"),
-      ),
+  val testTableName                     = UUID.randomUUID().toString()
+  val createTestTable: DBIO[Unit]       = {
+    DBIO.seq(
+      sqlu"""CREATE TABLE "#${testTableName}" (
+        id VARCHAR NOT NULL PRIMARY KEY,
+        some_int INT NOT NULL,
+        some_bool BOOLEAN NOT NULL
+      );"""
     )
+  }
+  val countTestTable: DBIO[Option[Int]] =
+    sql"""SELECT COUNT(1) FROM "#${testTableName}"; """
+      .as[Int]
+      .headOption
+
+  implicit val ec: ExecutionContextExecutor = ExecutionContext.global
+
   def spec: Spec[Environment with TestEnvironment with Scope, Any] =
     suite("PostgreSQL query tests")(basicPostgreSQLOperationsTest)
       .provideShared(
@@ -32,8 +40,7 @@ object PostgreSQLSpec extends ZIOSpecDefault {
         PostgreSQLPool.layer,
       )
 
-  def basicPostgreSQLOperationsTest
-    : Spec[PostgreSQLPool with Scope, Throwable] =
+  def basicPostgreSQLOperationsTest: Spec[Database with Scope, Throwable] =
     test("""
     Drop a table.
     Create a table.
@@ -46,47 +53,54 @@ object PostgreSQLSpec extends ZIOSpecDefault {
     Verify fetching and parsing a row meets expectation.
     """.strip) {
       for {
-        _ <- dropTable(testTable.name)
-        _ <- createTable(testTable)
+        _                          <- runDB(createTestTable)
+        _                          <- runDB(DBIO.seq(sqlu"""DROP TABLE "#${testTableName}" """))
+        _                          <- runDB(createTestTable)
+        initialRowCountInTestTable <- runDB(countTestTable)
+        _                          <- runDB(
+                                        DBIO.seq(
+                                          sqlu"""INSERT INTO "#${testTableName}" (id, some_int, some_bool) VALUES ('a', 1, TRUE);""",
+                                          sqlu"""INSERT INTO "#${testTableName}" (id, some_int, some_bool) VALUES ('b', 2, FALSE);"""
+                                        )
+                                      )
 
-        initialRowCountInTestTable <- countTable(testTable.name)
+        totalRowCountInTestTable <- runDB(countTestTable)
 
-        _ <- PostgreSQL.updateRaw(s"""
-        INSERT INTO "${testTable.name}" (id, some_int, some_bool) VALUES ('a', 1, TRUE);
-        INSERT INTO "${testTable.name}" (id, some_int, some_bool) VALUES ('b', 2, FALSE);
-        """)
+        constrainedRowCount <-
+          runDB(
+            sql"""SELECT COUNT(1) FROM "#${testTableName}" WHERE id = 'a'; """
+              .as[Int]
+              .headOption
+          )
 
-        totalRowCountInTestTable <- countTable(testTable.name)
-        constrainedRowCount      <-
-          countTable(testTable.name, Seq(Where("id", "=", "a")))
-        constrainedRowCount2     <-
-          countTable(testTable.name, Seq(Where("some_int", "=", 1)))
-        constrainedRowCount3     <-
-          countTable(testTable.name, Seq(Where("some_bool", "=", true)))
-        maybeRowOfId2            <- fetchRow(
-                                      testTable.name,
-                                      Seq(
-                                        Column("id", Decoders.string),
-                                        Column("some_int", Decoders.int),
-                                        Column("some_bool", Decoders.boolean),
-                                      ),
-                                      Seq(Where("id", "=", "b")),
-                                    )
+        constrainedRowCount2 <-
+          runDB(
+            sql"""SELECT COUNT(1) FROM "#${testTableName}" WHERE some_int = 1; """
+              .as[Int]
+              .headOption
+          )
+
+        constrainedRowCount3 <-
+          runDB(
+            sql"""SELECT COUNT(1) FROM "#${testTableName}" WHERE some_bool = TRUE; """
+              .as[Int]
+              .headOption
+          )
+        maybeRowOfIdB        <-
+          runDB(
+            sql"""SELECT id, some_int, some_bool FROM "#${testTableName}" WHERE id = 'b'; """
+              .as[(String, Int, Boolean)]
+              .headOption
+          )
+
       } yield assertTrue(
-        initialRowCountInTestTable == 0,
-        totalRowCountInTestTable == 2,
-        constrainedRowCount == 1,
-        constrainedRowCount2 == 1,
-        constrainedRowCount3 == 1,
-        maybeRowOfId2.contains(
-          Map.from(
-            Seq(
-              "id"        -> "b",
-              "some_int"  -> 2,
-              "some_bool" -> false,
-            ),
-          ),
-        ),
+        true,
+        initialRowCountInTestTable.headOption == Some(0),
+        totalRowCountInTestTable.headOption == Some(2),
+        constrainedRowCount == Some(1),
+        constrainedRowCount2 == Some(1),
+        constrainedRowCount3 == Some(1),
+        maybeRowOfIdB == Some(("b", 2, false))
       )
     }
 }
