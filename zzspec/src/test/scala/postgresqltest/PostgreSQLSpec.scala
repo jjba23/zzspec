@@ -30,7 +30,7 @@ object PostgreSQLSpec extends ZIOSpecDefault {
     Drop a table.
     Create a table.
     Verify amount of rows is 0.
-    Insert 2 rows.
+    Insert 4 rows.
     Verify 2 rows are present.
     Verify querying for a string meets expectation.
     Verify querying for an int meets expectation.
