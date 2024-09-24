@@ -143,16 +143,16 @@ By contributing, your work will be protected under the GNU Lesser General Public
 
 
 
-* Work done
+* ✅ Work done
 
-** DONE Consider adding Slick instead of Scalikejdbc and also supporting SQLite databases
+*** DONE Consider adding Slick instead of Scalikejdbc and also supporting SQLite databases
 CLOSED: <2024-09-24 di>
 
-** DONE Finalize initial phase Kafka testing
+*** DONE Finalize initial phase Kafka testing
 CLOSED: [2024-09-16 ma 00:06]
 
-** DONE Add vision statement and improve README 
+*** DONE Add vision statement and improve README 
 CLOSED: [2024-09-16 ma 00:07]
 
-** DONE Auto-tag and publish artifacts to Maven (with CI)
+*** DONE Auto-tag and publish artifacts to Maven (with CI)
 CLOSED: [2024-09-14 za 14:05]
