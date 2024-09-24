@@ -138,8 +138,6 @@ By contributing, your work will be protected under the GNU Lesser General Public
 
 ** Allow "initial state" in PostgreSQL and in Opensearch more easily
 
-** Ensure the PostgreSQL DSL is more type safe
-
 ** Considering not using Jackson to work with JSON 
 
 
