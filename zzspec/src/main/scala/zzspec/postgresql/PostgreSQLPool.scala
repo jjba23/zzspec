@@ -16,17 +16,19 @@ object PostgreSQLPool {
       for {
         postgresqlContainer <- ZIO.service[PostgreSQLContainer.Container]
 
-        dbConf <- ZIO.attempt {
+        dbConf <- ZIO.attemptBlocking {
                     val dataSource: DataSource = {
                       val ds = new BasicDataSource
-                      ds.setDriverClassName("org.postgresql.jdbc.JDBCDriver")
+                      ds.setDriverClassName(
+                        "org.postgresql.ds.PGSimpleDataSource"
+                      )
                       ds.setUsername(postgresqlContainer.value.getUsername())
                       ds.setPassword(postgresqlContainer.value.getPassword())
                       ds.setMaxTotal(30);
                       ds.setMaxIdle(10);
                       ds.setInitialSize(10);
                       ds.setValidationQuery(
-                        "SELECT 1 FROM INFORMATION_SCHEMA.SYSTEM_USERS"
+                        "SELECT 1 + 1"
                       )
                       new java.io.File(
                         "target"

@@ -46,8 +46,6 @@ object Dependencies extends AutoPlugin {
     val TestcontainersPostgresql = "org.testcontainers" % "postgresql"                % "1.20.1"
     val TestContainersMockServer = "org.testcontainers" % "mockserver"                % "1.20.1"
 
-    val Scalikejdbc = "org.scalikejdbc" %% "scalikejdbc" % "4.3.1"
-
     val PostgresqlDriver = "org.postgresql" % "postgresql" % "42.7.4"
 
     val MockServerClient = "org.mock-server" % "mockserver-client-java" % "5.15.0"
@@ -59,6 +57,8 @@ object Dependencies extends AutoPlugin {
     val Slf4jNop      = "org.slf4j"           % "slf4j-nop"      % "1.7.26"
     val Slick         = "com.typesafe.slick" %% "slick"          % "3.5.1"
     val SlickHikariCP = "com.typesafe.slick" %% "slick-hikaricp" % "3.5.1"
+
+    val ApacheCommonsDBCP = "org.apache.commons" % "commons-dbcp2" % "2.12.0"
 
     val zzspecDependencyOverrides = List(
       JacksonCore,
@@ -81,8 +81,8 @@ object Dependencies extends AutoPlugin {
       TestcontainersPostgresql,
       TestcontainersKafka,
       TestContainersMockServer,
-      Scalikejdbc,
       Slick,
+      ApacheCommonsDBCP,
       SlickHikariCP,
       Slf4jNop,
       PostgresqlDriver,
