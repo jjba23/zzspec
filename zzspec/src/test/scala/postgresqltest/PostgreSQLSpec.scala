@@ -3,6 +3,7 @@ package postgresqltest
 import zio._
 import zio.test._
 import zzspec.ZZSpec.{containerLogger, networkLayer}
+import zzspec.slick.SlickPostgres._
 import zzspec.postgresql._
 import slick.jdbc.PostgresProfile.api._
 import java.util.UUID
@@ -52,73 +53,54 @@ object PostgreSQLSpec extends ZIOSpecDefault {
     Verify fetching and parsing a row meets expectation.
     """.strip) {
       for {
-        db <- ZIO.service[Database]
-        _  <- ZIO.fromFuture { _ => db.run(createTestTable) }
-        _  <- ZIO.fromFuture { _ =>
-                db.run(DBIO.seq(sqlu"""DROP TABLE "#${testTableName}" """))
-              }
-        _  <- ZIO.fromFuture { _ => db.run(createTestTable) }
+        _                          <- runDB(createTestTable)
+        _                          <- runDB(DBIO.seq(sqlu"""DROP TABLE "#${testTableName}" """))
+        _                          <- runDB(createTestTable)
+        initialRowCountInTestTable <- runDB(countTestTable)
+        _                          <- runDB(
+                                        DBIO.seq(
+                                          sqlu"""INSERT INTO "#${testTableName}" (id, some_int, some_bool) VALUES ('a', 1, TRUE);""",
+                                          sqlu"""INSERT INTO "#${testTableName}" (id, some_int, some_bool) VALUES ('b', 2, FALSE);"""
+                                        )
+                                      )
 
-        initialRowCountInTestTable <- ZIO.fromFuture { _ =>
-                                        db.run(countTestTable)
-                                      }
+        totalRowCountInTestTable <- runDB(countTestTable)
 
-        _ <- ZIO.fromFuture { _ =>
-               db.run(
-                 DBIO.seq(
-                   sqlu"""INSERT INTO "#${testTableName}" (id, some_int, some_bool) VALUES ('a', 1, TRUE);""",
-                   sqlu"""INSERT INTO "#${testTableName}" (id, some_int, some_bool) VALUES ('b', 2, FALSE);"""
-                 )
-               )
-             }
+        constrainedRowCount <-
+          runDB(
+            sql"""SELECT COUNT(1) FROM "#${testTableName}" WHERE id = 'a'; """
+              .as[Int]
+              .headOption
+          )
 
-        totalRowCountInTestTable <- ZIO.fromFuture { _ =>
-                                      db.run(countTestTable)
-                                    }
+        constrainedRowCount2 <-
+          runDB(
+            sql"""SELECT COUNT(1) FROM "#${testTableName}" WHERE some_int = 1; """
+              .as[Int]
+              .headOption
+          )
 
-        constrainedRowCount <- ZIO.fromFuture { _ =>
-                                 db.run(
-                                   sql"""SELECT COUNT(1) FROM "#${testTableName}" WHERE id = 'a'; """
-                                     .as[Int]
-                                     .headOption
-                                 )
-                               }
+        constrainedRowCount3 <-
+          runDB(
+            sql"""SELECT COUNT(1) FROM "#${testTableName}" WHERE some_bool = TRUE; """
+              .as[Int]
+              .headOption
+          )
+        maybeRowOfIdB        <-
+          runDB(
+            sql"""SELECT id, some_int, some_bool FROM "#${testTableName}" WHERE id = 'b'; """
+              .as[(String, Int, Boolean)]
+              .headOption
+          )
 
-        constrainedRowCount2 <- ZIO.fromFuture { _ =>
-                                  db.run(
-                                    sql"""SELECT COUNT(1) FROM "#${testTableName}" WHERE some_int = 1; """
-                                      .as[Int]
-                                      .headOption
-                                  )
-                                }
-
-        // constrainedRowCount3 <-
-        //   countTable(testTable.name, Seq(Where("some_bool", "=", true)))
-        // maybeRowOfId2        <- fetchRow(
-        //                           testTable.name,
-        //                           Seq(
-        //                             Column("id", Decoders.string),
-        //                             Column("some_int", Decoders.int),
-        //                             Column("some_bool", Decoders.boolean),
-        //                           ),
-        //                           Seq(Where("id", "=", "b")),
-        //                         )
       } yield assertTrue(
         true,
         initialRowCountInTestTable.headOption == Some(0),
         totalRowCountInTestTable.headOption == Some(2),
         constrainedRowCount == Some(1),
         constrainedRowCount2 == Some(1),
-        // constrainedRowCount3 == 1,
-        // maybeRowOfId2.contains(
-        //   Map.from(
-        //     Seq(
-        //       "id"        -> "b",
-        //       "some_int"  -> 2,
-        //       "some_bool" -> false,
-        //     ),
-        //   )),
-
+        constrainedRowCount3 == Some(1),
+        maybeRowOfIdB == Some(("b", 2, false))
       )
     }
 }
