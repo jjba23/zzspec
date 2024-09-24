@@ -12,21 +12,6 @@ import scala.concurrent.ExecutionContextExecutor
 
 object PostgreSQLSpec extends ZIOSpecDefault {
 
-  val testTableName                     = UUID.randomUUID().toString()
-  val createTestTable: DBIO[Unit]       = {
-    DBIO.seq(
-      sqlu"""CREATE TABLE "#${testTableName}" (
-        id VARCHAR NOT NULL PRIMARY KEY,
-        some_int INT NOT NULL,
-        some_bool BOOLEAN NOT NULL
-      );"""
-    )
-  }
-  val countTestTable: DBIO[Option[Int]] =
-    sql"""SELECT COUNT(1) FROM "#${testTableName}"; """
-      .as[Int]
-      .headOption
-
   implicit val ec: ExecutionContextExecutor = ExecutionContext.global
 
   def spec: Spec[Environment with TestEnvironment with Scope, Any] =
@@ -52,17 +37,28 @@ object PostgreSQLSpec extends ZIOSpecDefault {
     Verify querying for a boolean meets expectation.
     Verify fetching and parsing a row meets expectation.
     """.strip) {
+      val testTableName                     = UUID.randomUUID().toString()
+      val countTestTable: DBIO[Option[Int]] =
+        sql"""SELECT COUNT(1) FROM "#${testTableName}"; """
+          .as[Int]
+          .headOption
+
       for {
-        _                          <- runDB(createTestTable)
-        _                          <- runDB(DBIO.seq(sqlu"""DROP TABLE "#${testTableName}" """))
-        _                          <- runDB(createTestTable)
+        _                          <- runDB(sqlu"""CREATE TABLE "#${testTableName}" (
+                                                         id VARCHAR NOT NULL PRIMARY KEY,
+                                                         some_int INT NOT NULL,
+                                                         some_bool BOOLEAN NOT NULL
+                                                       );""")
         initialRowCountInTestTable <- runDB(countTestTable)
-        _                          <- runDB(
-                                        DBIO.seq(
-                                          sqlu"""INSERT INTO "#${testTableName}" (id, some_int, some_bool) VALUES ('a', 1, TRUE);""",
-                                          sqlu"""INSERT INTO "#${testTableName}" (id, some_int, some_bool) VALUES ('b', 2, FALSE);"""
-                                        )
-                                      )
+
+        _ <- runDB(
+               DBIO.seq(
+                 sqlu"""INSERT INTO "#${testTableName}" (id, some_int, some_bool) VALUES ('a', 2, TRUE);""",
+                 sqlu"""INSERT INTO "#${testTableName}" (id, some_int, some_bool) VALUES ('b', 1, FALSE);""",
+                 sqlu"""INSERT INTO "#${testTableName}" (id, some_int, some_bool) VALUES ('c', 0, FALSE);""",
+                 sqlu"""INSERT INTO "#${testTableName}" (id, some_int, some_bool) VALUES ('d', -1, FALSE);"""
+               )
+             )
 
         totalRowCountInTestTable <- runDB(countTestTable)
 
@@ -93,14 +89,16 @@ object PostgreSQLSpec extends ZIOSpecDefault {
               .headOption
           )
 
+        _ <- runDB(sqlu"""DROP TABLE "#${testTableName}" """)
+
       } yield assertTrue(
         true,
         initialRowCountInTestTable.headOption == Some(0),
-        totalRowCountInTestTable.headOption == Some(2),
+        totalRowCountInTestTable.headOption == Some(4),
         constrainedRowCount == Some(1),
         constrainedRowCount2 == Some(1),
         constrainedRowCount3 == Some(1),
-        maybeRowOfIdB == Some(("b", 2, false))
+        maybeRowOfIdB == Some(("b", 1, false))
       )
     }
 }
