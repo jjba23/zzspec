@@ -1,27 +1,45 @@
 package zzspec.postgresql
 
-import scalikejdbc._
 import zio._
-
-case class PostgreSQLPool()
+import slick.jdbc.PostgresProfile.api._
+import org.apache.commons.dbcp2.BasicDataSource
+import javax.sql.DataSource
+import slick.jdbc.PostgresProfile
 
 object PostgreSQLPool {
   def layer: ZLayer[
-    Scope with PostgreSQLContainer.Container,
+    PostgreSQLContainer.Container,
     Throwable,
-    PostgreSQLPool,
+    PostgresProfile.backend.JdbcDatabaseDef
   ] =
     ZLayer.scoped {
       for {
         postgresqlContainer <- ZIO.service[PostgreSQLContainer.Container]
-        _                   <- ZIO.attemptBlocking(
-                                 ConnectionPool
-                                   .singleton(
-                                     postgresqlContainer.value.getJdbcUrl,
-                                     postgresqlContainer.value.getUsername,
-                                     postgresqlContainer.value.getPassword,
-                                   ),
-                               )
-      } yield PostgreSQLPool()
+
+        dbConf <- ZIO.attempt {
+                    val dataSource: DataSource = {
+                      val ds = new BasicDataSource
+                      ds.setDriverClassName("org.postgresql.jdbc.JDBCDriver")
+                      ds.setUsername(postgresqlContainer.value.getUsername())
+                      ds.setPassword(postgresqlContainer.value.getPassword())
+                      ds.setMaxTotal(30);
+                      ds.setMaxIdle(10);
+                      ds.setInitialSize(10);
+                      ds.setValidationQuery(
+                        "SELECT 1 FROM INFORMATION_SCHEMA.SYSTEM_USERS"
+                      )
+                      new java.io.File(
+                        "target"
+                      ).mkdirs // ensure that folder for database exists
+                      ds.setUrl(postgresqlContainer.value.getJdbcUrl())
+                      ds
+                    }
+
+                    dataSource.getConnection().close()
+
+                    val database = Database.forDataSource(dataSource, Some(30))
+                    database
+                  }
+      } yield dbConf
     }
 }
