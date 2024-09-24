@@ -72,17 +72,26 @@ object PostgreSQLSpec extends ZIOSpecDefault {
                )
              }
 
-        // totalRowCountInTestTable <- ZIO.fromFuture { _ =>
-        //                               db.run(
-        //                                 sql"SELECT COUNT(1) FROM ${testTableName};"
-        //                                   .as[Int]
-        //                               )
-        //                             }
+        totalRowCountInTestTable <- ZIO.fromFuture { _ =>
+                                      db.run(countTestTable)
+                                    }
 
-        // constrainedRowCount  <-
-        //   countTable(testTable.name, Seq(Where("id", "=", "a")))
-        // constrainedRowCount2 <-
-        //   countTable(testTable.name, Seq(Where("some_int", "=", 1)))
+        constrainedRowCount <- ZIO.fromFuture { _ =>
+                                 db.run(
+                                   sql"""SELECT COUNT(1) FROM "#${testTableName}" WHERE id = 'a'; """
+                                     .as[Int]
+                                     .headOption
+                                 )
+                               }
+
+        constrainedRowCount2 <- ZIO.fromFuture { _ =>
+                                  db.run(
+                                    sql"""SELECT COUNT(1) FROM "#${testTableName}" WHERE some_int = 1; """
+                                      .as[Int]
+                                      .headOption
+                                  )
+                                }
+
         // constrainedRowCount3 <-
         //   countTable(testTable.name, Seq(Where("some_bool", "=", true)))
         // maybeRowOfId2        <- fetchRow(
@@ -97,9 +106,9 @@ object PostgreSQLSpec extends ZIOSpecDefault {
       } yield assertTrue(
         true,
         initialRowCountInTestTable.headOption == Some(0),
-        // totalRowCountInTestTable.headOption == Some(2)
-        // constrainedRowCount == 1,
-        // constrainedRowCount2 == 1,
+        totalRowCountInTestTable.headOption == Some(2),
+        constrainedRowCount == Some(1),
+        constrainedRowCount2 == Some(1),
         // constrainedRowCount3 == 1,
         // maybeRowOfId2.contains(
         //   Map.from(
