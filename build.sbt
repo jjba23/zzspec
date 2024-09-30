@@ -10,7 +10,7 @@ ThisBuild / sonatypeCredentialHost := sonatypeCentralHost
 
 ThisBuild / publishTo := sonatypePublishToBundle.value
 
-ThisBuild / version := "0.8.6"
+ThisBuild / version := "0.8.7"
 
 name := "zzspec"
 
@@ -25,3 +25,11 @@ val zzspec = project
     libraryDependencies ++= zzspecDependencies,
     dependencyOverrides ++= zzspecDependencyOverrides
   )
+
+ThisBuild / publishMavenStyle := true
+
+ThisBuild / licenses := Seq(
+  "LGPL3" -> url("https://www.gnu.org/licenses/lgpl-3.0.en.html")
+)
+
+ThisBuild / sonatypeProfileName := "io.github.jjba23"
