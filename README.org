@@ -140,7 +140,8 @@ By contributing, your work will be protected under the GNU Lesser General Public
 
 ** Considering not using Jackson to work with JSON 
 
-
+** Auto-tag and publish artifacts to Maven (with CI)
+~sbt publishSigned~ -> ~sbt sonatypeBundleRelease~
 
 
 * ✅ Work done
@@ -154,5 +155,4 @@ CLOSED: [2024-09-16 ma 00:06]
 *** DONE Add vision statement and improve README 
 CLOSED: [2024-09-16 ma 00:07]
 
-*** DONE Auto-tag and publish artifacts to Maven (with CI)
-CLOSED: [2024-09-14 za 14:05]
+

@@ -1,4 +1,14 @@
 import scala.util.control.NonFatal
+import xerial.sbt.Sonatype.sonatypeCentralHost
+import xerial.sbt.Sonatype._
+
+sonatypeProjectHosting := Some(
+  GitHubHosting("jjba23", "zzspec", "jjbigorra@gmail.com")
+)
+
+ThisBuild / sonatypeCredentialHost := sonatypeCentralHost
+
+ThisBuild / publishTo := sonatypePublishToBundle.value
 
 ThisBuild / version := "0.8.6"
 
