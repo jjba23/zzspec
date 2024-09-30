@@ -59,11 +59,11 @@ See the MockServer spec [[./zzspec/src/test/scala/mockservertest/MockServerSpec.
 
 You can install ~zzspec~ just like any other Maven/Nexus package, by adding it as dependency to your project:
 #+begin_src scala
-  libraryDependencies += ("zzspec" %% "zzspec" % "0.8.2") // or newer
+  libraryDependencies += ("io.github.jjba23" %% "zzspec" % "0.8.15" % Test) // or newer
 #+end_src
 
 ZZSpec will also pull some libraries with it, including ZIO, Circe and testcontainers.
-Checkout the artifacts, which are hosted right here, on GitHub : https://github.com/jjba23/zzspec/packages/2255278 .
+Artifacts are hosted on Maven central.
 
 ** Status of zzspec
 
@@ -146,7 +146,7 @@ By contributing, your work will be protected under the GNU Lesser General Public
 
 * ✅ Work done
 
-*** DONE Consider adding Slick instead of Scalikejdbc and also supporting SQLite databases
+*** DONE Move to Slick instead of Scalikejdbc
 CLOSED: <2024-09-24 di>
 
 *** DONE Finalize initial phase Kafka testing
