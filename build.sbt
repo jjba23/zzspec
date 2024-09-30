@@ -13,7 +13,7 @@ ThisBuild / sonatypeCredentialHost := sonatypeCentralHost
 
 ThisBuild / publishTo := sonatypePublishToBundle.value
 
-ThisBuild / version := "0.8.13"
+ThisBuild / version := "0.8.14"
 
 ThisBuild / resolvers += "Mulesoft".at(
   "https://repository.mulesoft.org/nexus/content/repositories/public/"
@@ -50,7 +50,7 @@ ThisBuild / developers := List(
   )
 )
 
-ThisBuild / credentials += Credentials(
+credentials += Credentials(
   "GnuPG Key ID",
   "gpg",
   "C19D36C1B0EFAACEA3E5EF1094C62486A9D59BEF", // key identifier
