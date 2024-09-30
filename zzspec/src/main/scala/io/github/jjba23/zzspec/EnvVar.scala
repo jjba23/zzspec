@@ -1,4 +1,4 @@
-package zzspec
+package io.github.jjba23.zzspec
 
 final case class EnvVar[T](key: String, value: T) {
 

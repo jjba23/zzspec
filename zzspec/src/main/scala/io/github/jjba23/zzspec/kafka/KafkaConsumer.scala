@@ -1,4 +1,4 @@
-package zzspec.kafka
+package io.github.jjba23.zzspec.kafka
 
 import org.testcontainers.kafka.KafkaContainer
 import org.testcontainers.kafka.{KafkaContainer => KafkaTestContainer}

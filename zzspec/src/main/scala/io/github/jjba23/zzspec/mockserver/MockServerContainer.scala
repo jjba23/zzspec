@@ -1,4 +1,4 @@
-package zzspec.mockserver
+package io.github.jjba23.zzspec.mockserver
 
 import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.containers.{GenericContainer, Network}

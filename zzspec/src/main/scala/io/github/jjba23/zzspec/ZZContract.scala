@@ -1,4 +1,4 @@
-package zzspec
+package io.github.jjba23.zzspec
 
 import zio._
 

@@ -1,4 +1,4 @@
-package zzspec.http
+package io.github.jjba23.zzspec.http
 
 import zio._
 import zio.http._

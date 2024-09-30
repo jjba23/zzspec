@@ -1,4 +1,4 @@
-package zzspec.kafka
+package io.github.jjba23.zzspec.kafka
 
 import org.testcontainers.containers.Network
 import org.testcontainers.containers.output.Slf4jLogConsumer

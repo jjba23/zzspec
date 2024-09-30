@@ -5,9 +5,9 @@ import org.mockserver.model.HttpResponse.response
 import zio._
 import zio.http._
 import zio.test._
-import zzspec.ZZSpec.{containerLogger, networkLayer}
-import zzspec.http.Http._
-import zzspec.mockserver.{MockServer, MockServerContainer}
+import io.github.jjba23.zzspec.ZZSpec.{containerLogger, networkLayer}
+import io.github.jjba23.zzspec.http.Http._
+import io.github.jjba23.zzspec.mockserver.{MockServer, MockServerContainer}
 
 object MockServerSpec extends ZIOSpecDefault {
 

@@ -1,8 +1,8 @@
-package zzspec.mockserver
+package io.github.jjba23.zzspec.mockserver
 
 import org.mockserver.client.MockServerClient
 import zio.{ZIO, ZLayer}
-import zzspec.mockserver.MockServerContainer._
+import io.github.jjba23.zzspec.mockserver.MockServerContainer._
 
 object MockServer {
 

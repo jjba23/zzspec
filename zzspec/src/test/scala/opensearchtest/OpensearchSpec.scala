@@ -8,9 +8,9 @@ import io.circe.parser._
 import io.circe.syntax._
 import zio._
 import zio.test._
-import zzspec.ZZSpec.{containerLogger, networkLayer}
-import zzspec.opensearch.Opensearch._
-import zzspec.opensearch.{Opensearch, OpensearchContainer}
+import io.github.jjba23.zzspec.ZZSpec.{containerLogger, networkLayer}
+import io.github.jjba23.zzspec.opensearch.Opensearch._
+import io.github.jjba23.zzspec.opensearch.{Opensearch, OpensearchContainer}
 
 import java.util.UUID
 import scala.util.Try

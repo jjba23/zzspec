@@ -1,11 +1,11 @@
-package zzspec.opensearch
+package io.github.jjba23.zzspec.opensearch
 
 import com.sksamuel.elastic4s._
 import com.sksamuel.elastic4s.http.ElasticDsl._
 import com.sksamuel.elastic4s.http.{ElasticClient, ElasticProperties}
 import com.sksamuel.elastic4s.searches.SearchRequest
 import zio.{Scope, Task, ZIO, ZLayer}
-import zzspec.opensearch.OpensearchContainer._
+import io.github.jjba23.zzspec.opensearch.OpensearchContainer._
 
 object Opensearch {
 

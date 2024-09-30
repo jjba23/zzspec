@@ -1,0 +1,5 @@
+{
+  "stringValue" : "stringValue",
+  "intValue" : 999,
+  "stringListValue" : [ "a", "b", "c" ]
+}

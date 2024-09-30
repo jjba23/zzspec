@@ -6,10 +6,10 @@ import zio._
 import zio.kafka.consumer.{Consumer, Subscription}
 import zio.kafka.serde.Serde
 import zio.test._
-import zzspec.ZZContract._
-import zzspec.ZZSpec._
-import zzspec.kafka.Kafka._
-import zzspec.kafka._
+import io.github.jjba23.zzspec.ZZContract._
+import io.github.jjba23.zzspec.ZZSpec._
+import io.github.jjba23.zzspec.kafka.Kafka._
+import io.github.jjba23.zzspec.kafka._
 
 object KafkaSpec extends ZIOSpecDefault {
 

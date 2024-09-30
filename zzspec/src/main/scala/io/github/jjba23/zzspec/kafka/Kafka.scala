@@ -1,4 +1,4 @@
-package zzspec.kafka
+package io.github.jjba23.zzspec.kafka
 
 import org.apache.kafka.clients
 import org.apache.kafka.clients.admin.{Admin => AdminClient, AdminClientConfig}
@@ -8,7 +8,7 @@ import org.testcontainers.kafka.KafkaContainer
 import zio._
 import zio.kafka.producer.Producer
 import zio.kafka.serde._
-import zzspec.ZZSpec._
+import io.github.jjba23.zzspec.ZZSpec._
 
 import java.util.Properties
 import scala.jdk.CollectionConverters._

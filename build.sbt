@@ -2,7 +2,7 @@ import scala.util.control.NonFatal
 import xerial.sbt.Sonatype.sonatypeCentralHost
 import xerial.sbt.Sonatype._
 
-sonatypeProjectHosting := Some(
+ThisBuild / sonatypeProjectHosting := Some(
   GitHubHosting("jjba23", "zzspec", "jjbigorra@gmail.com")
 )
 
@@ -10,9 +10,9 @@ ThisBuild / sonatypeCredentialHost := sonatypeCentralHost
 
 ThisBuild / publishTo := sonatypePublishToBundle.value
 
-ThisBuild / version := "0.8.7"
+ThisBuild / version := "0.8.10"
 
-name := "zzspec"
+name := "io.github.jjba23.zzspec"
 
 ThisBuild / resolvers += "Mulesoft".at(
   "https://repository.mulesoft.org/nexus/content/repositories/public/"
@@ -33,3 +33,27 @@ ThisBuild / licenses := Seq(
 )
 
 ThisBuild / sonatypeProfileName := "io.github.jjba23"
+
+ThisBuild / homepage := Some(url("https://github.com/jjba23/zzspec"))
+ThisBuild / scmInfo := Some(
+  ScmInfo(
+    url("https://github.com/jjba23/zzspec"),
+    "scm:git@github.com:jjba23/zzspec.git"
+  )
+)
+
+ThisBuild / developers := List(
+  Developer(
+    id = "jjba23",
+    name = "Josep Bigorra",
+    email = "jjbigorra@gmail.com",
+    url = url("https://github.com/jjba23")
+  )
+)
+
+ThisBuild / credentials += Credentials(
+  "GnuPG Key ID",
+  "gpg",
+  "C19D36C1B0EFAACEA3E5EF1094C62486A9D59BEF", // key identifier
+  "ignored" // this field is ignored; passwords are supplied by pinentry
+)

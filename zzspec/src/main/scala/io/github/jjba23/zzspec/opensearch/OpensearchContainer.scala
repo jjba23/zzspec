@@ -1,4 +1,4 @@
-package zzspec.opensearch
+package io.github.jjba23.zzspec.opensearch
 
 import org.opensearch.testcontainers.{OpensearchContainer => OpensearchTestContainer}
 import org.testcontainers.containers.Network

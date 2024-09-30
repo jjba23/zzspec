@@ -1,4 +1,4 @@
-package zzspec.postgresql
+package io.github.jjba23.zzspec.postgresql
 
 import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.containers.{Network, PostgreSQLContainer => PostgreSQLTestContainer}

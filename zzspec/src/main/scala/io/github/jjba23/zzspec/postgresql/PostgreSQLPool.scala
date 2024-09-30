@@ -1,4 +1,4 @@
-package zzspec.postgresql
+package io.github.jjba23.zzspec.postgresql
 
 import zio._
 import slick.jdbc.PostgresProfile.api._

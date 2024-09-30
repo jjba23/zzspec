@@ -2,9 +2,9 @@ package postgresqltest
 
 import zio._
 import zio.test._
-import zzspec.ZZSpec.{containerLogger, networkLayer}
-import zzspec.slick.SlickPostgres._
-import zzspec.postgresql._
+import io.github.jjba23.zzspec.ZZSpec.{containerLogger, networkLayer}
+import io.github.jjba23.zzspec.slick.SlickPostgres._
+import io.github.jjba23.zzspec.postgresql._
 import slick.jdbc.PostgresProfile.api._
 import java.util.UUID
 import scala.concurrent.ExecutionContext
