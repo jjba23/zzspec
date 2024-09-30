@@ -13,7 +13,7 @@ ThisBuild / sonatypeCredentialHost := sonatypeCentralHost
 
 ThisBuild / publishTo := sonatypePublishToBundle.value
 
-ThisBuild / version := "0.8.14"
+ThisBuild / version := "0.8.15"
 
 ThisBuild / resolvers += "Mulesoft".at(
   "https://repository.mulesoft.org/nexus/content/repositories/public/"
@@ -50,9 +50,4 @@ ThisBuild / developers := List(
   )
 )
 
-credentials += Credentials(
-  "GnuPG Key ID",
-  "gpg",
-  "C19D36C1B0EFAACEA3E5EF1094C62486A9D59BEF", // key identifier
-  "ignored" // this field is ignored; passwords are supplied by pinentry
-)
+usePgpKeyHex("C19D36C1B0EFAACEA3E5EF1094C62486A9D59BEF")
