@@ -7,3 +7,6 @@ fmt:
 	GITHUB_TOKEN=""	sbt "scalafixAll; scalafmt"
 test:
 	GITHUB_TOKEN=""	sbt "test"
+release:
+	sbt "publishSigned"
+	sbt "sonatypeBundleRelease"

@@ -2,6 +2,9 @@ import scala.util.control.NonFatal
 import xerial.sbt.Sonatype.sonatypeCentralHost
 import xerial.sbt.Sonatype._
 
+ThisBuild / organization := "io.github.jjba23"
+name := "zzspec"
+
 ThisBuild / sonatypeProjectHosting := Some(
   GitHubHosting("jjba23", "zzspec", "jjbigorra@gmail.com")
 )
@@ -10,9 +13,7 @@ ThisBuild / sonatypeCredentialHost := sonatypeCentralHost
 
 ThisBuild / publishTo := sonatypePublishToBundle.value
 
-ThisBuild / version := "0.8.10"
-
-name := "io.github.jjba23.zzspec"
+ThisBuild / version := "0.8.13"
 
 ThisBuild / resolvers += "Mulesoft".at(
   "https://repository.mulesoft.org/nexus/content/repositories/public/"
@@ -25,8 +26,6 @@ val zzspec = project
     libraryDependencies ++= zzspecDependencies,
     dependencyOverrides ++= zzspecDependencyOverrides
   )
-
-ThisBuild / publishMavenStyle := true
 
 ThisBuild / licenses := Seq(
   "LGPL3" -> url("https://www.gnu.org/licenses/lgpl-3.0.en.html")
