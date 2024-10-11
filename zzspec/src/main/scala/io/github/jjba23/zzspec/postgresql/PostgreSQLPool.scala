@@ -1,14 +1,14 @@
 package io.github.jjba23.zzspec.postgresql
 
 import zio._
-import slick.jdbc.PostgresProfile.api._
 import org.apache.commons.dbcp2.BasicDataSource
+import slick.jdbc.JdbcBackend
 
 object PostgreSQLPool {
   def layer: ZLayer[
     PostgreSQLContainer.Container,
     Throwable,
-    Database
+    JdbcBackend.Database
   ] =
     ZLayer.scoped {
       for {
@@ -34,7 +34,9 @@ object PostgreSQLPool {
         db <- ZIO.acquireRelease {
                 // validate opening conn works
                 ZIO.attempt(dataSource.getConnection().close()) *>
-                ZIO.succeed(Database.forDataSource(dataSource, Some(10)))
+                ZIO.succeed(
+                  JdbcBackend.Database.forDataSource(dataSource, Some(10))
+                )
               }(db => ZIO.succeed(db.close()))
       } yield db
     }

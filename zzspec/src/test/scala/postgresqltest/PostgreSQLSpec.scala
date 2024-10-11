@@ -3,12 +3,13 @@ package postgresqltest
 import zio._
 import zio.test._
 import io.github.jjba23.zzspec.ZZSpec.{containerLogger, networkLayer}
-import io.github.jjba23.zzspec.slick.SlickPostgres._
+import io.github.jjba23.zzspec.slick.SlickPostgreSQL._
 import io.github.jjba23.zzspec.postgresql._
-import slick.jdbc.PostgresProfile.api._
 import java.util.UUID
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContextExecutor
+import slick.jdbc.JdbcBackend
+import slick.jdbc.PostgresProfile.api._
 
 object PostgreSQLSpec extends ZIOSpecDefault {
 
@@ -20,12 +21,13 @@ object PostgreSQLSpec extends ZIOSpecDefault {
         Scope.default,
         networkLayer,
         containerLogger(),
-        PostgreSQLContainer.Settings.default,
-        PostgreSQLContainer.layer,
+        PostgreSQLContainer.Settings.layer(),
+        PostgreSQLContainer.layer(),
         PostgreSQLPool.layer,
       )
 
-  def basicPostgreSQLOperationsTest: Spec[Database with Scope, Throwable] =
+  def basicPostgreSQLOperationsTest
+    : Spec[JdbcBackend.Database with Scope, Throwable] =
     test("""
     Drop a table.
     Create a table.
@@ -37,18 +39,21 @@ object PostgreSQLSpec extends ZIOSpecDefault {
     Verify querying for a boolean meets expectation.
     Verify fetching and parsing a row meets expectation.
     """.strip) {
-      val testTableName                     = UUID.randomUUID().toString()
+      val testTableName = UUID.randomUUID().toString()
+
       val countTestTable: DBIO[Option[Int]] =
         sql"""SELECT COUNT(1) FROM "#${testTableName}"; """
           .as[Int]
           .headOption
 
       for {
-        _                          <- runDB(sqlu"""CREATE TABLE "#${testTableName}" (
-                                                         id VARCHAR NOT NULL PRIMARY KEY,
-                                                         some_int INT NOT NULL,
-                                                         some_bool BOOLEAN NOT NULL
-                                                       );""")
+        _ <- runDB(sqlu"""
+          CREATE TABLE "#${testTableName}" (
+            id VARCHAR NOT NULL PRIMARY KEY,
+            some_int INT NOT NULL,
+            some_bool BOOLEAN NOT NULL
+          );""")
+
         initialRowCountInTestTable <- runDB(countTestTable)
 
         _ <- runDB(

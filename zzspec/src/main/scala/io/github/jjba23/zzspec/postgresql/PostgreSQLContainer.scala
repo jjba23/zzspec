@@ -7,12 +7,13 @@ import zio._
 
 object PostgreSQLContainer {
 
-  val defaultSettings: Settings      = Settings(
-    username = "zzspec",
-    password = "zzspec",
-    databaseName = "zzspec",
-  )
-  val layer: ZLayer[
+  def layer(
+    image: DockerImageName = DockerImageName
+      .parse(
+        "docker.io/postgres:15",
+      )
+      .asCompatibleSubstituteFor("postgres")
+  ): ZLayer[
     Settings with Network with Slf4jLogConsumer,
     Throwable,
     Container,
@@ -21,21 +22,16 @@ object PostgreSQLContainer {
       settings    <- ZIO.service[Settings]
       network     <- ZIO.service[Network]
       logConsumer <- ZIO.service[Slf4jLogConsumer]
-      postgresql  <- scopedTestContainer(settings, logConsumer, network)
+      postgresql  <- scopedTestContainer(image, settings, logConsumer, network)
       _           <-
         ZIO.logInfo(
           s"[ZZSpec] PostgreSQL started at: http://${postgresql.getHost}:${postgresql.getMappedPort(5432)})"
         )
     } yield Container(postgresql)
   }
-  private val image: DockerImageName =
-    DockerImageName
-      .parse(
-        "docker.io/postgres:16",
-      )
-      .asCompatibleSubstituteFor("postgres")
 
   private def scopedTestContainer(
+    image: DockerImageName,
     settings: Settings,
     logConsumer: Slf4jLogConsumer,
     network: Network,
@@ -68,7 +64,13 @@ object PostgreSQLContainer {
   case class Settings(username: String, password: String, databaseName: String)
 
   object Settings {
-    def default: ULayer[Settings] =
-      ZLayer.succeed(defaultSettings)
+    def layer(
+      settings: Settings = Settings(
+        username = "zzspec",
+        password = "zzspec",
+        databaseName = "zzspec",
+      )
+    ): ULayer[Settings] =
+      ZLayer.succeed(settings)
   }
 }
