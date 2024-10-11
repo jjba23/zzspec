@@ -1,12 +1,13 @@
 clean:
 	rm -rf .bloop .metals project/target project/project target zzspec/target
-	GITHUB_TOKEN="" sbt "bloopInstall"
+	sbt "bloopInstall"
 validate:
-	GITHUB_TOKEN=""	sbt "scalafixAll; scalafmt; test"
+	sbt "scalafixAll; scalafmt; test"
 fmt:
-	GITHUB_TOKEN=""	sbt "scalafixAll; scalafmt"
+	sbt "scalafixAll; scalafmt"
 test:
-	GITHUB_TOKEN=""	sbt "test"
+	sbt "test"
 release:
+# this requires the correct GPG key to be present in your system	
 	sbt "publishSigned"
 	sbt "sonatypeBundleRelease"
