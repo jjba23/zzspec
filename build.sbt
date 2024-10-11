@@ -13,7 +13,7 @@ ThisBuild / sonatypeCredentialHost := sonatypeCentralHost
 
 ThisBuild / publishTo := sonatypePublishToBundle.value
 
-ThisBuild / version := "0.8.15"
+ThisBuild / version := "0.9.1"
 
 ThisBuild / resolvers += "Mulesoft".at(
   "https://repository.mulesoft.org/nexus/content/repositories/public/"
