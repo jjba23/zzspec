@@ -19,3 +19,4 @@ object MockServer {
 
   case class Client(value: MockServerClient)
 }
+

@@ -16,7 +16,7 @@ object MockServerSpec extends ZIOSpecDefault {
       Scope.default,
       networkLayer,
       containerLogger(),
-      MockServerContainer.layer,
+      MockServerContainer.layer(),
       MockServer.layer,
       Client.default,
     ) @@ TestAspect.withLiveClock

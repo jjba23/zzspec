@@ -7,7 +7,10 @@ import zio._
 
 object MockServerContainer {
 
-  val layer: ZLayer[
+  def layer(
+    image: String = "docker.io/xdevsoftware/mockserver",
+    version: String = "1.0.5"
+  ): ZLayer[
     Network with Slf4jLogConsumer,
     Throwable,
     Container,
@@ -15,25 +18,31 @@ object MockServerContainer {
     for {
       network     <- ZIO.service[Network]
       logConsumer <- ZIO.service[Slf4jLogConsumer]
-      mockServer  <- scopedTestContainer(logConsumer, network)
-      _           <-
+      mockServer  <- scopedTestContainer(
+                       DockerImageName
+                         .parse(image)
+                         .withTag(version),
+                       logConsumer,
+                       network
+                     )
+
+      _ <-
         ZIO.logInfo(
           s"[ZZSpec] MockServer started at: http://${mockServer.getHost}:${mockServer.getMappedPort(1080)})"
         )
     } yield Container(mockServer)
   }
-  private val mockServerVersion      = "latest"
-  private val image: DockerImageName = DockerImageName
-    .parse("docker.io/xdevsoftware/mockserver")
-    .withTag(mockServerVersion)
 
   private def scopedTestContainer(
+    dockerImageName: DockerImageName,
     logConsumer: Slf4jLogConsumer,
     network: Network,
   ): URIO[Any with Scope, GenericContainer[_]] =
     ZIO.acquireRelease(
       ZIO
-        .attempt(new GenericContainer(image))
+        .attempt(
+          new GenericContainer(dockerImageName)
+        )
         .tap(container =>
           ZIO.attempt(containerSetup(container, logConsumer, network))
         )
