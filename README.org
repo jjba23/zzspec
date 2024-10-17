@@ -59,7 +59,7 @@ See the MockServer spec [[./zzspec/src/test/scala/mockservertest/MockServerSpec.
 
 You can install ~zzspec~ just like any other Maven/Nexus package, by adding it as dependency to your project:
 #+begin_src scala
-  libraryDependencies += ("io.github.jjba23" %% "zzspec" % "0.8.15" % Test) // or newer
+  libraryDependencies += ("io.github.jjba23" %% "zzspec" % "0.9.3" % Test) // or newer
 #+end_src
 
 ZZSpec will also pull some libraries with it, including ZIO, Circe and testcontainers.
