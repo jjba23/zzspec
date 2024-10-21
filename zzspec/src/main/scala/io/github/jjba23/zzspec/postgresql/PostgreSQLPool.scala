@@ -5,7 +5,10 @@ import org.apache.commons.dbcp2.BasicDataSource
 import slick.jdbc.JdbcBackend
 
 object PostgreSQLPool {
-  def layer: ZLayer[
+  def layer(
+    schema: String = "public",
+    validationQuery: String = "SELECT 1 + 1"
+  ): ZLayer[
     PostgreSQLContainer.Container,
     Throwable,
     JdbcBackend.Database
@@ -21,11 +24,12 @@ object PostgreSQLPool {
           )
           ds.setUsername(postgresqlContainer.value.getUsername())
           ds.setPassword(postgresqlContainer.value.getPassword())
-          ds.setMaxTotal(30);
-          ds.setMaxIdle(10);
-          ds.setInitialSize(10);
+          ds.setMaxTotal(30)
+          ds.setMaxIdle(10)
+          ds.setInitialSize(10)
+          ds.setDefaultSchema(schema)
           ds.setValidationQuery(
-            "SELECT 1 + 1"
+            validationQuery
           )
           ds.setUrl(postgresqlContainer.value.getJdbcUrl())
           ds

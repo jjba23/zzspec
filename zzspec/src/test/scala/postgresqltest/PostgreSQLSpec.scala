@@ -23,7 +23,7 @@ object PostgreSQLSpec extends ZIOSpecDefault {
         containerLogger(),
         PostgreSQLContainer.Settings.layer(),
         PostgreSQLContainer.layer(),
-        PostgreSQLPool.layer,
+        PostgreSQLPool.layer(),
       )
 
   def basicPostgreSQLOperationsTest
